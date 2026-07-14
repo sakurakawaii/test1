@@ -1,0 +1,7 @@
+﻿Can you turn these SLA files into a clean management report artifact?
+
+
+I've got a raw ticket export, the SLA rules, and a draft summary someone already wrote. Please review everything and create a polished exec-ready report I can share internally.
+
+
+Include the headline SLA figures, any important issues or risks you notice, breach themes, a short management summary, and any data quality concerns or assumptions.
