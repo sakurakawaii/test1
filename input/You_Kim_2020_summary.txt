@@ -1,0 +1,8 @@
+Reference summary — species-specific multiplex PCR for Lactobacillus acidophilus group
+(Condensed from: You I, Kim EB. Genome-based species-specific primers for rapid identification of six species of Lactobacillus acidophilus group using multiplex PCR. PLOS ONE, 2020, 15(3), e0230550. DOI: 10.1371/journal.pone.0230550.)
+
+Six closely related Lactobacillus species within the acidophilus group are difficult to tell apart using standard 16S rRNA sequencing alone, since their 16S sequences are highly similar (over 92% identical across the group). The authors instead compared whole genomes across the group to find genes unique to each of the six target species, then designed primer sets targeting those unique genes.
+
+When tested individually, each primer set produced a single, correctly-sized band only for its matching target species, with no amplification for other species or genera tested as negative controls. When all six primer sets were pooled into one multiplex reaction, the same species-specific pattern held — each target species still produced its own distinct band size, allowing identification from a single combined reaction rather than six separate ones.
+
+One limitation noted by the authors: when DNA from multiple species was mixed together in one sample (rather than testing isolated single-species DNA), the multiplex reaction did not reliably detect all species present — one target species failed to show up in the mixed-sample test, for reasons the authors could not fully explain. They flagged this as needing further investigation before the method could be applied directly to genuinely mixed or complex samples.

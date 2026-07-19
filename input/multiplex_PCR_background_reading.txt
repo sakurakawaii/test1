@@ -1,0 +1,6 @@
+Reference summary — general considerations in multiplex PCR primer design
+(Condensed background reading, not tied to any specific ongoing project)
+
+Multiplex PCR assays, where multiple primer sets are combined in a single reaction, are sensitive to relative primer concentrations, since sets with more efficient amplification can outcompete others for reagents, sometimes suppressing detection of lower-abundance targets. Common troubleshooting approaches include titrating individual primer concentrations, staggering annealing temperatures across a gradient, and validating each primer set individually before combining them. Amplicon size spacing also matters for gel-based readout — targets with very similar product sizes can be difficult to distinguish without high-resolution gel conditions or capillary electrophoresis.
+
+This is general background reading kept on file from a methods workshop — not written with any specific current project or sample set in mind.

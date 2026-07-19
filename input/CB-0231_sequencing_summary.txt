@@ -1,0 +1,10 @@
+Sequencing run summary — ABI 3730XL capillary sequencer
+Project: CSAP-002
+Sample: CB-0231
+Primer: 12sai (forward)
+Read length: 612 bp
+Quality: Q20+ from position 18 to 590 (high confidence region)
+Trace file: CB-0231_12sai_F.ab1 (binary trace not included in this summary)
+BLAST top hit: Callinectes sapidus, 99.2% identity, 100% query coverage
+
+Notes: routine confirmatory sequencing run, standard chromatogram quality, no unusual double-peaks or ambiguous base calls flagged.

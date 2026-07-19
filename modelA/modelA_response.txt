@@ -1,0 +1,14 @@
+﻿The report is complete and well-formed. Here is a summary of what I delivered.
+What I produced
+/tmp/outputs/Gel_Analysis_Report_Quarterly_Review.md — a self-contained Markdown report, plus three labelled figures (Figure1_CSAP-002.png, Figure2_HERB-003.png, Figure3_LACB-014.png).
+How I triaged the folder
+From ~30 mixed files I identified three active, PI-led projects with a full document set + gel image (CSAP‑002, HERB‑003, LACB‑014) and analysed all three. I set aside admin/maintenance/inventory files and other projects (SOIL‑019, background reading), and explicitly flagged PSMD‑001 (the "scan" is a handwritten note, not a gel) and MPNE‑007 (gel mentioned but no image) as not analysable. Dates were cross-referenced between notebooks, setup notes and manifests to bind each image to its method.
+Key results
+* LACB‑014 (Fig 3, 16 Mar 2026): High quality — all six species at their documented sizes (staircase, r≈0.99 vs expected), all negative/no-template controls blank. Ready for next step.
+* HERB‑003 (Fig 2, 03 Jun): 4-panel integrity gel shows the expected fresh→young→old degradation gradient; fresh controls intact. Ginkgo young/old lanes flagged as low-confidence (faint).
+* CSAP‑002 (Fig 1, 29 Apr 2026): Groups separate as designed (danae = single ~180 bp; sapidus = ~180 + ~113 bp cut), but I did not certify it.
+Guardrails I enforced
+* Unresolved source conflict (CSAP‑002): Lee (2020) vs the lab's digestion-timing source disagree on the 30-min pattern. I flagged it as unresolved and refused to let the PI memo/notebook settle it — per the rule that notes cannot adjudicate a source-vs-source conflict — and recommended a 3‑h digest that satisfies both.
+* No invented ladders: used the documented Promega 100 bp ladder for CSAP; kept HERB's 1 Kb Plus sizing qualitative (rung values not supplied); confirmed LACB sizes from documented expected sizes rather than guessing ladder rungs.
+* No unsupported calls: withheld lane 17's species ID (lost paperwork); excluded background/glow specks verified against empty lanes; noted the paper-over-note contradiction for LACB's "mixed sample" claim; only cited the three supplied papers (APA 7), and explicitly did not cite Telle & Thines (2008), which wasn't provided.
+Each gel has a titled figure, a full legend (sizes, ladder, % agarose, date), a band table, a discussion paragraph, and a per-gel confidence entry, with a lead summary and analysis-notes section so the technician can immediately see what's ready versus what needs a rerun.

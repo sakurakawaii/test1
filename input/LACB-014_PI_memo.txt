@@ -1,0 +1,9 @@
+From: Dr. Bridget Calloway
+To: Dev Okonkwo
+Re: multiplex screening rationale
+
+Quick context for whoever's running the gels this round — we're trying to confirm whether our new species-specific multiplex panel can reliably tell apart the six acidophilus-group species from a single reaction, rather than having to run 16S sequencing on every isolate that comes through screening. My working hypothesis is that the panel will correctly call species-level identity purely from band size, since the primer sets were designed off unique single-copy genes rather than the near-identical 16S regions that make this group hard to separate in the first place.
+
+If a lane gives no band at all for one of our six target species, that's actually still a useful result — it likely means the isolate isn't one of our six, not that the test failed. Please don't force an ID onto a blank lane.
+
+One open question I still don't have a good answer for: the published method we based this panel on flagged that a genuinely mixed/complex sample (multiple species' DNA pooled together, not just cleanly isolated single-strain DNA) caused one target species to drop out undetected in their hands, and they weren't able to fully explain why. We haven't run our own mixed-sample validation to see if we hit the same issue, so treat this batch's clean single-strain results as just that — clean single-strain results — and don't assume the panel would behave the same way on a messier, pooled sample.

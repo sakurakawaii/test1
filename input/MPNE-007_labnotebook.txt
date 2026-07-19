@@ -1,0 +1,7 @@
+=== MPNE-007 lab notebook ===
+
+
+16 March
+Ran species confirmation PCR today for the Mycoplasma pneumoniae screening panel (P1 adhesin gene target, ~475bp expected amplicon) on this month's clinical isolate backlog. All 8 samples plus positive/negative controls loaded on 1.5% gel, 100bp ladder. Positive control gave clean expected band; 2 of 8 samples showed no amplification (repeat extraction scheduled), remainder as expected.
+
+Filed under MPNE per usual — separate freezer box from the LACB/CSAP/HERB material, no crossover expected.

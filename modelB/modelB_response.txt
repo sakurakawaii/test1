@@ -1,0 +1,15 @@
+﻿The report and all figures are complete and validated. Here's a summary of what I produced and the key conclusions.
+Deliverables (in /tmp/outputs/)
+* Gel_Analysis_Report_Quarterly_Review.md — the full report
+* Figure1_CSAP-002.png, Figure2_HERB-003.png, Figure3_LACB-014.png — labelled gel figures
+What I found
+I sorted the folder and identified three genuine gel images, each matched to its project with high confidence by filename + date + loaded-lane content:
+Figure 1 — CSAP-002 (blue-crab PCR‑RFLP, 29 Apr 2026): usable. Every sequence-confirmed C. sapidus lane shows the partial-digest pattern (uncut ~180 bp + ~113/~67 bp SspI cut fragments); every C. danae lane is a single uncut ~180 bp band. The PCR‑RFLP calls agree with the prior sequencing IDs. I calibrated against the on-gel Promega 100 bp ladder (11 rungs, bright 500 bp reference).
+Figure 2 — HERB-003 (herbarium DNA integrity, 3 June): usable. Clear age-dependent degradation across all four species — fresh = intact high‑MW, young herbarium = degraded, old herbarium = heavily degraded/near-absent. Corroborated by the NanoDrop log.
+Figure 3 — LACB-014 (six-species multiplex, 16 Mar 2026): high quality. All six species gave single bands matching the documented primer sizes (1241→224 bp; R²=0.99), and all five negatives + NTC were clean.
+Three things I flagged prominently (Section 7)
+1. CSAP-002 digest-timing conflict — a methodological note says a residual uncut band at 30 min means "rerun," which contradicts the Lee et al. (2020) paper (partial digest is normal). Since a paper outranks a note, I resolved it in favour of the paper (no rerun needed) — but I explicitly flagged that if that source is actually a peer-reviewed paper, it would become an unresolved conflict, and noted the species call doesn't depend on the debate anyway.
+2. LACB-014 — a lab-notebook claim that the panel "works on mixed samples" contradicts both You & Kim (2020) and the PI's own memo; the paper governs, and it doesn't affect this single-strain gel.
+3. Lane 17 (CB-0315) must not be written up as "confirmed C. danae" — its paperwork was lost.
+No rerun is required for any of the three analysed gels. PSMD-001_scan.jpg turned out to be a handwritten note (not a gel), and other files (MPNE-007, SOIL-019, admin logs, background reading) were out of scope — all explained in Section 8.
+One note for you: I deliberately did not assign specific kb values to the HERB-003 (1 Kb Plus) or LACB-014 (100 bp) ladders since their rung values weren't in the supplied docs — HERB sizing is qualitative (relative to ladder + protocol thresholds), and LACB sizing was cross-validated against the primer-size reference instead.

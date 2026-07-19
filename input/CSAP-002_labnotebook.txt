@@ -1,0 +1,23 @@
+=== CSAP-002 lab notebook ===
+
+
+[02 April]
+Planning to test SspI digestion (Promega brand, what we have in stock right now) at 15 min incubation to start, may need to extend if incomplete. Considering whether we even need the longer incubation time given how fast the enzyme is supposed to work per the manufacturer's activity guide. May switch to NEB's SspI once our order comes in if we're not happy with how this batch performs.
+
+Will update once we've settled on a standard incubation time and supplier for the project going forward.
+
+
+[15 April]
+NEB SspI order came in. Ran a side-by-side comparison against the Promega batch — going with NEB going forward, and standardizing on 30 min as our default incubation time (see paper on file re: expected partial digestion pattern at this timepoint for true sapidus samples). Updating protocol doc to reflect this.
+
+
+[22 April]
+Digested this week's batch of 12S PCR products with SspI today, 30 min incubation at 37C as usual (matches our standard partial-digest timepoint, not the 3h full digest). Samples from this batch: crabs collected Choptank River site, tissue extracted last week. Will image on the gel doc tomorrow once digestion is confirmed complete — remember partial digest at 30 min normally shows BOTH the ~180bp uncut band AND the smaller cut fragment together for true C. sapidus samples, so don't flag that as a mixed/contaminated sample, that's expected.
+
+Reminder to self: label the gel image with today's digestion date, not tomorrow's imaging date, when it goes in the shared folder — technicians before me have mixed this up.
+
+
+[29 April]
+Full digestion run + gel imaging done today, see sample manifest and gel image for this date.
+
+Correction to lane 17 (sample CB-0315): field notebook page linking this specimen to its original 12S sequencing result was damaged/illegible during transit from the Trinidad and Tobago field site. We believe it's from the same Trinidad and Tobago collection batch as the other C. danae samples in this run, but we don't have the paperwork to confirm species ID the way we do for the other lanes. Digestion pattern can still be reported, just don't carry over the "confirmed C. danae" label for this one specifically until we track down (or re-run) the sequencing confirmation.

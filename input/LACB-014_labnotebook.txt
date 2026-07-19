@@ -1,0 +1,23 @@
+=== LACB-014 lab notebook ===
+
+
+[08 March]
+Extracted genomic DNA from overnight MRS cultures (37C, 24h) for this round of isolates. Nanodrop 260/280 all in range (1.8-2.0), logged separately. Ready for gradient PCR tomorrow or Thurs depending on bench time.
+
+
+[11 March]
+Ran gradient PCR optimization today for the multiplex primer panel (gasseri/acidophilus/helveticus/jensenii/crispatus/gallinarum) — annealing temps 58-63C tested across the panel per the established protocol. All six primer sets gave a clean single band at the expected annealing temps, consistent with prior runs. Full multiplex reaction (all six pooled) scheduled for later this week once we confirm optimal temp from today's gradient — will run against the full negative control panel (plantarum, salivarius, reuteri, E. faecalis, E. faecium) at that point.
+
+DNA stock used today: 08 March extraction (see above).
+
+Next step: multiplex gel + negative controls, once temp confirmed.
+
+
+[15 March]
+Talked to Dr. Bridget Calloway briefly — she mentioned the multiplex panel worked fine on the mixed-species DNA test they ran, correctly picking up all six species from the pooled sample without any issues. Good to know it holds up on mixed samples too, not just clean single-strain DNA, if we ever need to screen a less clean sample down the line.
+
+Multiplex gel scheduled for tomorrow, using the 63C annealing temp confirmed from the gradient run.
+
+
+[16 March]
+Multiplex gel run today, full panel + all 5 negative controls, 63C annealing. See sample manifest and gel image for this date. Results written up separately.

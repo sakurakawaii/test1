@@ -1,0 +1,10 @@
+Reference summary — PCR-RFLP assay for blue crab species identification
+(Condensed from: Lee BB, Schott EJ, Behringer DC, Bojko J, Kough A, Plough LV. Rapid Genetic Identification of the Blue Crab Callinectes sapidus and Other Callinectes spp. Using Restriction Enzyme Digestion and High Resolution Melt Assays. Frontiers in Marine Science, 2020, 7, 633. DOI: 10.3389/fmars.2020.00633.)
+
+The blue crab Callinectes sapidus is commonly confused with several closely related Callinectes species, which has real consequences for seafood labeling accuracy. The authors developed a PCR-based restriction digestion assay targeting a small region of the mitochondrial 12S rRNA gene, where only C. sapidus carries a recognition site for the SspI restriction enzyme.
+
+After amplifying the ~180bp target region, digesting with SspI splits the product into two smaller fragments only in true C. sapidus samples; all other Callinectes species remain undigested as a single ~180bp band. Testing this against sequence-confirmed samples from multiple geographic populations, the assay correctly identified C. sapidus with 100% accuracy.
+
+An important methodological detail: at shorter digestion incubation times (around 30 minutes), C. sapidus samples showed partial digestion — meaning both the original uncut band and the smaller cut fragments were visible together in the same lane. Only longer incubation (several hours) produced a fully clean digestion pattern with just the smaller fragments. The authors noted this partial-digestion pattern is expected and should not be mistaken for sample degradation or a mixed/contaminated sample.
+
+The authors also tested a melt-curve-based alternative to running gels, which produced comparable results faster, though the gel-based method remains the more universally accessible option for labs without qPCR instrumentation.

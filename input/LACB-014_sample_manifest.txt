@@ -1,0 +1,18 @@
+Project: LACB-014 — Sample manifest, multiplex comparison run
+
+Lane | Strain ID | Species (expected) | Source
+1 | KACC-gass-01 | L. gasseri | KACC collection
+2 | KACC-acid-02 | L. acidophilus | KACC collection
+3 | KACC-helv-03 | L. helveticus | KACC collection
+4 | KACC-jens-04 | L. jensenii | KACC collection
+5 | KACC-crisp-05 | L. crispatus | KACC collection
+6 | KACC-gall-06 | L. gallinarum | KACC collection
+7 | KACC-plant-07 | L. plantarum (negative control) | KACC collection
+8 | KACC-saliv-08 | L. salivarius (negative control) | KACC collection
+9 | local-reut-09 | L. reuteri (negative control) | local isolate
+10 | local-faeca-10 | E. faecalis (negative control) | local isolate
+11 | local-faeci-11 | E. faecium (negative control) | local isolate
+NC | — | No-template negative control (no DNA added) | —
+M | — | 100bp ladder | lab stock
+
+All genomic DNA extracted same batch, Nanodrop 260/280 checked prior to PCR setup (all in acceptable range 1.8-2.0, logged separately).

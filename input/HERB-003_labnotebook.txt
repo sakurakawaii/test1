@@ -1,0 +1,15 @@
+=== HERB-003 lab notebook ===
+
+
+[27 May]
+Picked up the four old herbarium specimens from the collections room today (Lonicera, Ginkgo, Laburnum, Liriodendron — see specimen manifest). Also collected fresh leaf material from the same individuals in the botanical garden for comparison, and set aside portions for same-day drying to make the "young herbarium" comparison set. All going into extraction this week.
+
+
+[29 May]
+CTAB extractions done for all fresh/young/old sets. Yields lower than expected for the old specimens as usual — not concerned, this tracks with what we'd expect for archival material. Nanodrop readings logged separately. Gel run planned for early next week to check integrity before deciding which samples are worth sending for sequencing.
+
+
+[03 June]
+Worth remembering — there's a good methods paper (Telle & Thines 2008, comparing DNA extraction protocols across very old herbarium specimens) that found some extraction kits recover way more amplifiable DNA from aged material than others. We're not using their exact protocol here since we're following the standard CTAB method already on file, but it might be worth revisiting if our yields keep being marginal on the oldest specimens.
+
+Gel run today — fresh/young/old comparison across all four species. See gel image and specimen manifest for this date.

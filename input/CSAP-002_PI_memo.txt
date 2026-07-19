@@ -1,0 +1,9 @@
+From: Dr. Anselm Duarte
+To: Dev Okonkwo
+Re: seafood mislabeling screen
+
+Reminder of why we're running these — we've had reports of possible mislabeling in crab product coming through the local supply chain (non-sapidus Callinectes species sold as genuine blue crab). My hypothesis is that the SspI digest assay will reliably separate true C. sapidus from the other Callinectes species using just the digestion pattern, without needing to sequence every sample.
+
+Important: per the methodology we're following (see paper on file), we should expect PARTIAL digestion at the 30 minute timepoint for true sapidus samples — meaning both the intact ~180bp band and the smaller cut fragment turning up together in the same lane. That's expected, not a sign the digestion failed or the sample is mixed. Only the 3-hour full digest should give a clean single small-fragment result for sapidus. (Worth flagging — I've seen at least one other write-up in this space describe the 30 min timepoint differently, so don't take this as universally settled if it comes up again.)
+
+Still uncertain: whether this assay would hold up on cooked/processed crab meat (as opposed to fresh tissue) — that's relevant for the actual mislabeling application but we haven't validated it yet, so don't assume it generalizes to processed product results.

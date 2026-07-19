@@ -1,0 +1,7 @@
+=== SOIL-019 lab notebook ===
+
+
+05 May
+DNA extraction from this month's soil cores complete (12 sites, agricultural transect). Yields lower than usual, likely due to high clay content at sites 4 and 7 — will need to adjust extraction kit or try a bead-beating pre-treatment next round. Not running these on a diagnostic gel individually; going straight to library prep for shotgun sequencing once yields are confirmed via Qubit.
+
+Filed separately from the multiplex/species-ID work — different freezer, different project altogether.
