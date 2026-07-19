@@ -1,0 +1,41 @@
+﻿Overview
+The project models a B2B billing and product-usage platform: raw billing data (accounts, subscriptions, invoices) and product analytics data (usage events, feature flags) are staged and transformed into intermediate MRR, payment, usage, and account-health logic. These feed revenue marts (invoices, monthly MRR, churn events, account/plan dimensions) and product marts (feature adoption, daily usage, account health scores) for reporting.
+Models Added
+* None. No new model files were introduced this sprint.
+Models Modified
+* models/intermediate/int_account_usage.sql
+   * Corrected the argument order of ARRAY_CONTAINS to Snowflake's ARRAY_CONTAINS(&lt;value&gt;, &lt;array&gt;) signature for the has_sso_login flag.
+   * Added a new first_event_type column via the first_touch_feature macro (see Issues — the macro emits a non-Snowflake function).
+* models/intermediate/int_invoice_payments.sql
+   * Renamed output column days_late → days_overdue (see Issues — this breaks the downstream fct_invoices model).
+* models/intermediate/int_subscription_mrr.sql
+   * Added a new tenure_days column using AGE() (see Issues — not a Snowflake function).
+   * Replaced the Redshift-style DATE_CMP(...) = 0 comparison with a native date-equality check in the MRR proration logic (valid fix).
+* models/marts/product/fct_feature_adoption.sql
+   * Replaced a per-row correlated scalar subquery with a LEFT JOIN + GROUP BY aggregation for features_adopted_count (performance improvement).
+   * Added a legacy_flags CTE that is never referenced (see Issues — dead code).
+* models/marts/revenue/fct_invoices.sql
+   * Added a payment_status_label column using Snowflake IFF().
+   * Still selects i.days_late from int_invoice_payments, which was renamed this sprint (see Issues).
+* models/marts/revenue/fct_mrr_monthly.sql
+   * Added a currency_overrides CTE referencing ref('int_currency_rates') with a left join exposing override_rate (see Issues — missing reference).
+   * Wrapped mrr_amount_usd in ISNULL(...) to default nulls to 0 (see Issues — not a Snowflake function).
+   * Fixed the previously invalid RANK() call by adding the required OVER (ORDER BY m.mrr_amount DESC) window clause (valid fix).
+Note: macros/generate_surrogate_key.sql was also changed this sprint (an 'acct_v2|' salt prefix was added to the hash input), but it is only invoked by models/marts/revenue/dim_accounts.sql, which was not added or modified in this cycle, so the macro change is not evaluated here.
+Models Removed
+* None. No model files were deleted this sprint.
+Issues
+Models with Inefficient SQL Code
+* models/marts/product/fct_feature_adoption.sql — The newly added legacy_flags CTE is defined but never referenced anywhere in the model. It is dead code: Snowflake prunes unreferenced CTEs so it carries no compute cost, but it clutters the model and misleads reviewers. Recommendation: remove the CTE, or join/filter on it if legacy-flag exclusion was the intent of the change.
+* models/intermediate/int_account_usage.sql — The deduped_sessions CTE (carried into this sprint's modified version) is defined but never referenced by the downstream CTEs. Recommendation: remove the unused CTE or wire it into account_flags if deduplication was intended.
+Models with Incorrect Syntax
+All three errors below pass dbt compile (Jinja is valid) but cause a runtime failure when dbt run executes the statement — Snowflake rejects each with an "Unknown function" SQL compilation error.
+* models/intermediate/int_subscription_mrr.sql — AGE(CURRENT_DATE(), start_date) is a PostgreSQL function and does not exist in Snowflake. Correction: use DATEDIFF(day, start_date, CURRENT_DATE()) as tenure_days.
+* models/marts/revenue/fct_mrr_monthly.sql — ISNULL(m.mrr_amount * fx.rate_to_usd, 0) uses the SQL Server ISNULL function, which does not exist in Snowflake. Correction: use COALESCE(m.mrr_amount * fx.rate_to_usd, 0) (or IFNULL/ZEROIFNULL).
+* models/intermediate/int_account_usage.sql — The newly added first_event_type column calls the first_touch_feature macro, which expands to ELEMENT_AT(event_type_array, 1). ELEMENT_AT is a Spark/Trino function and does not exist in Snowflake. Correction: update the macro to use GET({{ array_col }}, 0) or {{ array_col }}[0] (Snowflake arrays are 0-indexed).
+Models with Missing References
+* models/marts/revenue/fct_mrr_monthly.sql — Missing reference: ref('int_currency_rates'). No model, seed, or snapshot named int_currency_rates exists in the project. This is a compilation failure: dbt cannot resolve the node ("depends on a node named 'int_currency_rates' which was not found"), which blocks compilation of the entire project until the model is created or the ref is removed.
+* models/marts/revenue/fct_invoices.sql — Missing reference: column days_late from int_invoice_payments. The upstream model renamed the column to days_overdue this sprint, so i.days_late no longer resolves. This is a runtime failure when dbt run builds the model (Snowflake error: invalid identifier 'I.DAYS_LATE'). Fix by selecting i.days_overdue (optionally aliased back to days_late if downstream consumers depend on the old name).
+Sources That Are Never Referenced in a Model
+* product.feature_usage_raw (defined in models/staging/_sources_product.yml) — Ghost source: declared but never referenced via {{ source() }} in any model. Described as a legacy pre-2024 extract; this is carried over from the prior sprint rather than introduced this cycle. Recommend removing the definition or building a staging model on it.
+* All other declared sources (billing.accounts, billing.subscriptions, billing.invoices, product.usage_events, product.feature_flags) are referenced by staging models.
