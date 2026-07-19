@@ -1,5 +1,0 @@
-ref,item,amount_m,date,proposed_treatment,controlled_treatment
-LC01,January asset de-risking trade,12.0,2026-01-05,reduce Market SCR in FY2025 board table,exclude from locked 31 Dec CAP_R4; disclose only if needed
-LC02,Subordinated debt coupon true-up,3.0,2025-12-30,increase own funds again,no action; already included in CAP_R4 own funds
-LC03,January model recalibration run,9.0,2026-01-08,use recalibrated SCR split,exclude; post-year-end and unsigned
-LC04,Intercompany capital-support recharge,6.0,2026-01-10,show as capital support movement,exclude; intercompany and eliminated to nil
