@@ -1,0 +1,57 @@
+# dbt Changelog — Billing & Product-Usage Platform (Current Sprint)
+
+## Overview
+
+This dbt project models the billing/revenue side of the business (accounts, subscriptions, invoices, payments, MRR, and churn) alongside product-usage analytics (usage events, feature flags, feature adoption, and account health), sourced from raw `billing` and `product_analytics` schemas. This sprint modified six existing models — column additions, a column rename, cross-dialect function fixes, and a subquery refactor — with no models added or removed.
+
+## Models Added
+
+- None.
+
+## Models Modified
+
+- `models/intermediate/int_account_usage.sql`
+  - Fixed the argument order of `ARRAY_CONTAINS` for `has_sso_login` to the correct Snowflake signature (`ARRAY_CONTAINS(<value>, <array>)`).
+  - Added a new `first_event_type` column via the `first_touch_feature()` macro (see Issues — the macro renders a non-Snowflake function).
+- `models/intermediate/int_invoice_payments.sql`
+  - Renamed output column `days_late` → `days_overdue` (see Issues — downstream `fct_invoices` was not updated to match).
+- `models/intermediate/int_subscription_mrr.sql`
+  - Added a new `tenure_days` column computed with `AGE()` (see Issues — not a Snowflake function).
+  - Replaced the Redshift-only `DATE_CMP(...) = 0` comparison with a native date equality check for the proration logic — a valid cross-dialect fix.
+- `models/marts/product/fct_feature_adoption.sql`
+  - Refactored the per-row correlated scalar subquery that computed `features_adopted_count` into a `LEFT JOIN` + `GROUP BY` — a performance improvement.
+  - Added a new `legacy_flags` CTE (see Issues — it is never referenced).
+- `models/marts/revenue/fct_invoices.sql`
+  - Added a new `payment_status_label` column using `IFF()` (valid Snowflake).
+  - Still selects `i.days_late` from `int_invoice_payments`, which was renamed this cycle (see Issues).
+- `models/marts/revenue/fct_mrr_monthly.sql`
+  - Added a `currency_overrides` CTE referencing `ref('int_currency_rates')` and a new `override_rate` column (see Issues — the referenced model does not exist).
+  - Wrapped `mrr_amount_usd` in `ISNULL(..., 0)` to default nulls to zero (see Issues — not a Snowflake function).
+  - Fixed `mrr_rank`: `RANK()` previously had no `OVER` clause; it now correctly reads `RANK() OVER (ORDER BY m.mrr_amount DESC)`.
+
+Note: `macros/generate_surrogate_key.sql` was also edited this sprint (a `'acct_v2|'` salt was prepended to the hash input). It is only invoked by `dim_accounts`, which was not added or modified this cycle, so the macro change is not evaluated here — however, reviewers should be aware it will change every `account_sk` value emitted by `dim_accounts` on the next run.
+
+## Models Removed
+
+- None.
+
+## Issues
+
+### Models with Inefficient SQL Code
+
+- `models/marts/product/fct_feature_adoption.sql` — the newly added `legacy_flags` CTE (`select distinct flag_name from adoption where flag_name ilike '%legacy%'`) is defined but never referenced anywhere in the model; it is dead code. **Recommendation:** remove the CTE, or — if the intent was to exclude legacy flags from `features_adopted_count` — join/anti-join it into the `final` CTE (e.g., `where ad.flag_name not in (select flag_name from legacy_flags)`). Snowflake typically prunes unreferenced CTEs, so this is a code-hygiene/maintainability concern rather than a failure, but it suggests an incomplete change.
+
+### Models with Incorrect Syntax
+
+- `models/intermediate/int_subscription_mrr.sql` — **runtime failure.** `AGE(CURRENT_DATE(), start_date)` is a PostgreSQL function; Snowflake has no `AGE()` and will raise `SQL compilation error: Unknown function AGE` when the model is run. **Correction:** `DATEDIFF(day, start_date, CURRENT_DATE()) as tenure_days`. Because every downstream revenue mart (`fct_mrr_monthly`, `fct_churn_events`, and the `assert_mrr_non_negative` test target) builds on this model, this error blocks the revenue lineage.
+- `models/marts/revenue/fct_mrr_monthly.sql` — **runtime failure.** `ISNULL(m.mrr_amount * fx.rate_to_usd, 0)` uses the SQL Server two-argument `ISNULL`, which does not exist in Snowflake. **Correction:** use `COALESCE(m.mrr_amount * fx.rate_to_usd, 0)` (or `IFNULL`/`NVL`).
+- `models/intermediate/int_account_usage.sql` — **runtime failure.** The newly added `first_event_type` column invokes the `first_touch_feature()` macro, which renders `ELEMENT_AT(event_type_array, 1)`. `ELEMENT_AT` is a Spark/Trino function and does not exist in Snowflake. **Correction:** update the macro (or inline the expression) to Snowflake's 0-indexed accessor, e.g. `GET({{ array_col }}, 0)` or `{{ array_col }}[0]`, to return the first element. Note the index shift: the 1-based `ELEMENT_AT(..., 1)` maps to index `0` in Snowflake.
+
+### Models with Missing References
+
+- `models/marts/revenue/fct_mrr_monthly.sql` — **compilation failure.** Missing reference: `ref('int_currency_rates')`. No model (or seed) named `int_currency_rates` exists in the project. dbt will fail at parse time with "depends on a node named 'int_currency_rates' which was not found," which blocks compilation of the entire project, not just this model. Either add the `int_currency_rates` model or remove the `currency_overrides` CTE and the `co.override_rate` column.
+- `models/marts/revenue/fct_invoices.sql` — **runtime failure.** Missing column reference: `i.days_late`. The upstream model `int_invoice_payments` renamed this column to `days_overdue` this cycle, so Snowflake will raise `invalid identifier 'I.DAYS_LATE'` when the model runs. Update the select to `i.days_overdue` (optionally aliased `as days_late` if downstream consumers depend on the old name).
+
+### Sources That Are Never Referenced in a Model
+
+- `product.feature_usage_raw` (`raw_db.product_analytics.feature_usage_raw`, defined in `models/staging/_sources_product.yml`) — described as a legacy pre-2024 usage extract, it is not referenced by any model via `source()`. This ghost source is carried over unchanged from the prior sprint; consider removing the definition or building a staging model on it. All other declared sources (`billing.accounts`, `billing.subscriptions`, `billing.invoices`, `product.usage_events`, `product.feature_flags`) are referenced.

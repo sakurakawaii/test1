@@ -1,0 +1,33 @@
+version: 2
+
+sources:
+  - name: product
+    database: raw_db
+    schema: product_analytics
+    tables:
+      - name: usage_events
+        description: Raw product usage events
+        columns:
+          - name: event_id
+          - name: org_id
+          - name: account_id
+          - name: event_type
+          - name: feature_keys
+          - name: occurred_at
+
+      - name: feature_flags
+        description: Feature flag configuration and rollout state
+        columns:
+          - name: flag_id
+          - name: account_id
+          - name: flag_name
+          - name: rollout_segments
+          - name: is_enabled
+          - name: updated_at
+
+      - name: feature_usage_raw
+        description: Legacy raw feature usage extract from the pre-2024 product analytics stack
+        columns:
+          - name: account_id
+          - name: feature_name
+          - name: used_at
