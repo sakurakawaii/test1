@@ -1,0 +1,11 @@
+driver_code,finance_v5_module,amount_m,finance_signoff,notes
+C501,Insurance underwriting,154.0,signed 12 Jan 2026,base underwriting
+C502,Insurance underwriting,18.0,signed 12 Jan 2026,reserve/lapse stress
+C503,Insurance underwriting,20.0,signed 12 Jan 2026,Finance treats longevity hedge overlay as underwriting
+C504,Market,92.0,signed 12 Jan 2026,interest/spread
+C505,Market,15.0,signed 12 Jan 2026,with-profits guarantee
+C506,Market,31.0,signed 12 Jan 2026,structured credit
+C507,Counterparty credit,18.0,signed 12 Jan 2026,reinsurance concentration
+C508,Counterparty credit,16.0,signed 12 Jan 2026,broker collateral
+C509,Operational,38.0,signed 12 Jan 2026,operational risk
+C510,Other / diversification allocation,53.0,signed 12 Jan 2026,tax/diversification presentation

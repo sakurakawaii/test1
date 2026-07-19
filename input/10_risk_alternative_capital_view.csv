@@ -1,0 +1,8 @@
+row,FY2025_risk_v6_m,FY2024_signed_m,movement_m,ratio_or_comment,risk_view_note
+Insurance underwriting,172.0,184.0,-12.0,37.80% of SCR,excludes C503 hedge overlay
+Market,158.0,129.0,29.0,34.73% of SCR,includes C503 hedge overlay
+Counterparty credit,34.0,49.0,-15.0,7.47% of SCR,same as v5
+Operational,42.0,36.0,6.0,9.23% of SCR,includes model governance overlay
+Other / diversification allocation,49.0,40.0,9.0,10.77% of SCR,net of operational overlay
+Total SCR,455.0,438.0,17.0,100.00%,ties to CAP_R4
+Eligible own funds,642.0,615.0,27.0,SCR coverage 141.10%,ties to CAP_R4

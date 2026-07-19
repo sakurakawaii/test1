@@ -1,0 +1,23 @@
+﻿Done. All three files are in /tmp/outputs/, every figure re-derived and tied out from the folder. Here's the bottom line.
+Verdict: Finance v5 is usable today — no fatal issue
+The management candidate table is arithmetically clean: it ties exactly to locked CAP_R4 (own funds £642.0m, SCR £455.0m, MCR £168.0m), uses the correct signed FY2024 comparatives, and all four late/cutoff items are correctly kept out (Jan trade, Jan recalibration, intercompany recharge eliminated, sub-debt coupon not double counted). capital_board_table.csv uses it as the working board view with two labelling changes:
+* Totals and coverage ratios (141.10% SCR / 382.14% MCR) — FINAL, locked. Identical under both attribution views.
+* The five module rows — "WORKING VIEW – NOT FINAL." I overrode management's "Ready" flags because the required combined approval (CAP_ATTRIB_Q4_COMBINED_APPROVAL_v7.pdf) never arrived; v5 is Finance-signed only.
+Risk v6 does change the story, so it's shown in the table
+Two reclasses, zero effect on totals or coverage, big effect on narrative:
+* C503 longevity hedge overlay (£20.0m): v5 tells the board underwriting capital rose +£8m and market +£9m; v6 says underwriting fell £12m and market (+£29m) drove essentially the whole £17m SCR increase.
+* Model governance overlay (£4.0m): Operational 38 vs 42.
+Don't let the commentary lean on "underwriting-driven" vs "market-driven" until the combined approval lands. Counterparty credit (−£15m) is solid either way.
+Wording: not safe — four separate failures
+All four sign-off files are missing from the folder, so per control rule 8 the draft commentary cannot go as written:
+1. Dividend capacity — Treasury review unsigned → delete "no dividend-capacity concerns".
+2. Capital target — BRC FY2025 note unsigned → you may state the fact that 141.10% exceeds the 140% policy threshold (headroom is only ~£5.0m / 1.1pts), but not "target achieved".
+3. Solvency — "no concerns / adequate" and "v5 is ready for board approval" are both unsupported.
+4. Bonus — RemCo unsigned → delete the bonus sentence entirely.
+capital_close_note.md includes a drop-in safe replacement paragraph that states the locked facts and flags the three outstanding reviews.
+Main fixes before the final pack (full detail in capital_attribution_exceptions.csv, EX-01–13)
+1. Chase the combined Finance/Risk approval and settle C503, the £4.0m overlay, and the C510 presentation.
+2. Clear the stale-looking dispute flags on C507/C508 (both functions already agree — Counterparty credit).
+3. Recut the board commentary with the safe wording; chase Treasury/BRC/RemCo sign-offs.
+4. Keep the January items out of the movement narrative.
+Nothing blocks sending the table itself — the blockers are confined to the module-attribution labels and the conclusion wording, and both are handled in the pack as delivered.

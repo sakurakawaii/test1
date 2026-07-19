@@ -1,0 +1,9 @@
+metric,value_m,status,notes
+eligible_own_funds,642.0,locked,matches CAP_R4
+SCR,455.0,locked,matches CAP_R4
+MCR,168.0,locked,matches CAP_R4
+target_SCR_coverage_ratio,1.4,policy target,"capital policy threshold, not final conclusion wording"
+board_risk_appetite_upper_zone,1.45,policy context,do not infer dividend capacity without signed review
+tier_1_own_funds,512.0,locked,support schedule only
+tier_2_own_funds,130.0,locked,support schedule only
+intercompany_support_recharge,0.0,eliminated,not external capital

@@ -1,0 +1,8 @@
+metric,amount_m,source,locked_status,notes
+eligible_own_funds,642.0,CAP_R4 control total,locked,after elimination of intercompany support recharge
+SCR,455.0,CAP_R4 control total,locked,agreed total SCR before unresolved module attribution
+MCR,168.0,CAP_R4 control total,locked,minimum capital requirement
+SCR_coverage_ratio,1.411,642.000 / 455.000,locked,141.10%
+MCR_coverage_ratio,3.8214,642.000 / 168.000,locked,382.14%
+movement_own_funds_vs_PY,27.0,642.000 - 615.000,locked,aggregate only
+movement_SCR_vs_PY,17.0,455.000 - 438.000,locked,aggregate only
