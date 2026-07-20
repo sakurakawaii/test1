@@ -1,7 +1,0 @@
-=== Shared -80 freezer inventory update ===
-
-
-20 April
-Rack 3, shelf 2 reorganized — please update your sample logs if you moved anything during the audit. A few unlabelled tubes found in Rack 3 have been moved to the "unknown, please claim" box near the door; if any are yours please claim and relabel by end of week or they'll be discarded per lab policy.
-
-Reminder: freezer door alarm was going off intermittently last week — maintenance ticket filed, should be resolved now. Let admin know if it happens again.

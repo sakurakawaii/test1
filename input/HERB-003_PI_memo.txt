@@ -1,9 +1,0 @@
-From: Dr. Ingrid Bosch
-To: Dev Okonkwo
-Re: herbarium feasibility assessment
-
-Background for this batch — we're deciding whether it's worth sending any of our older herbarium specimens for sequencing, or whether the DNA is too far gone to bother. My expectation, based on published work in this space, is that we'll see fragment sizes drop off sharply with specimen age — young herbarium material should still show some higher molecular weight signal, but the oldest specimens (60+ years) likely won't have much above ~1kb left.
-
-This isn't a failure if that's what we see — it's the expected outcome for degraded herbarium DNA, and it just tells us to prioritize younger specimens or supplement with alternative approaches (shorter target regions, more sensitive extraction) for the oldest ones.
-
-Open question I haven't resolved: whether storage conditions specific to our own collection (temperature/humidity logs are patchy for anything before 2005) might mean our specimens are more or less degraded than what's typical in the literature — so treat published degradation timelines as a general guide, not an exact prediction for our own samples.

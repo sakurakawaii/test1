@@ -1,6 +1,0 @@
-Reference summary — restriction digestion timing for Callinectes species identification
-(Condensed from a separate methodological note reviewed by the lab, distinct from the Lee et al. 2020 Frontiers paper already on file)
-
-In contrast to some published protocols, this source states that a 30-minute SspI digestion incubation is generally sufficient to achieve complete digestion of the 12S rRNA PCR product in C. sapidus samples, and that any residual uncut band visible at this timepoint should be interpreted as incomplete reaction efficiency (e.g., insufficient enzyme or suboptimal buffer conditions) rather than an expected partial-digestion artifact. The source recommends re-running any sample showing a residual uncut band at 30 minutes, rather than treating it as a normal intermediate result.
-
-This directly conflicts with the digestion behavior described in the Lee et al. (2020) paper already on file for this project, which explicitly describes partial digestion (both cut and uncut bands present) as the expected, normal result at the 30-minute timepoint for true C. sapidus samples.
