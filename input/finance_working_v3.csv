@@ -1,0 +1,9 @@
+finance_ref,pack_version,finance_line,route_bucket,route_refs,source_basis,claimed_pack_value_gbp,v3_working_value_gbp,basis_state,linked_refs,finance_note
+FIN-001,original_pack_v3,defect_scrap_reduction,FP1_to_FP6_main,FP1-A|FP2-A|FP3-A|FP4-A|FP5-A|FP6-A,route_table_QA_MES,328000,328000,route_table_bridge,MC-001..MC-036|QP_closed_cases,defect and scrap bridge for main SW44 routes
+FIN-002,original_pack_v3,avoided_internal_rework,FP1_to_FP6_main,FP1-A|FP2-A|FP3-A|FP4-A|FP5-A|FP6-A,route_table_QA_MES,182000,182000,route_table_bridge,MC-001..MC-036|OVR-001..OVR-027,rework bridge for main SW44 routes
+FIN-003,original_pack_v3,distributor_rework_cases,FP1_to_FP6_main,FP1-A|FP2-A|FP3-A|FP4-A|FP5-A|FP6-A,mature_service_case_family,62000,48000,case_family_adjusted,CR-PIL-001..CR-PIL-012,case family cap applied in v3
+FIN-004,original_pack_v3,manual_recheck_labour_reduction,final_pack_support,FP1|FP2|FP3|FP4|FP5|FP6|FP7|FP8|FP9,old_recheck_export,54000,54000,ls_code_changed,QA_weekly_notes_section_1|MC_line_support_codes,support hours moved under LS code after W16
+FIN-005,original_pack_v3,pallet_audit_staffing_removal,route_table_staffing,SW-44A|SW-44B|SW-44C,standard_work_assumption,70000,70000,std_work_separate,19_standard_work_extract|QA_weekly_notes_section_6,pallet table remains in route records
+FIN-006,original_pack_v3,customer_credit_reduction,service_credit,CR-F8-220|CR-F8-238|CR-F5X-114|CR-F6-209,finance_service_pull,35000,35000,credit_family_repeat,CR-CRD-001|CR-CRD-002|CR-CRD-003,credit rows can repeat service case families
+FIN-007,original_pack_v3,FP8_trial_upside,FP8_trial,FP8-T,trial_wave_view,65000,65000,trial_branch,WT-011|WT-015|QP-2515|QP-2529|QP-2553|QP-2568,trial carton line retained in wave view
+FIN-008,original_pack_v3,FP5X_trial_upside,FP5X_trial,FP5-X,map_pending_view,24000,24000,map_pending,WT-006|WT-014|QP-2541|QP-2565,export trial branch besides FP5 map list

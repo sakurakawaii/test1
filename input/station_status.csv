@@ -1,0 +1,38 @@
+station_ref,route_code,mes_label,line_ref,pack_format_code,camera_build,mode_code,state_from,state_to,operator_panel_state,camera_map_ref,last_cal_check,station_comment
+CAM-FP1-01,FP1-A,F1_MAIN,FP1,STD,v0.8.7,OBS,10/03/2025 06:00,24/03/2025 05:59,observe_only,MAP-STD-02,09/03/2025,early image compare run
+CAM-FP1-01,FP1-A,F1_MAIN,FP1,STD,v0.9.3,ADV,24/03/2025 06:00,13/04/2025 21:59,operator_prompt,MAP-STD-02,23/03/2025,prompt rows only
+CAM-FP1-01,FP1-A,F1_MAIN,FP1,STD,v1.0.2,RH_ARM,14/04/2025 06:00,27/04/2025 21:59,route_hold_ready,MAP-STD-02,13/04/2025,main route table armed
+CAM-FP1-01,FP1-A,F1_MAIN,FP1,STD,v1.1.0,RH_LIVE,28/04/2025 06:00,open,route_hold_live,MAP-STD-02,27/04/2025,normal table feed
+CAM-FP2-01,FP2-A,F2_MAIN,FP2,STD,v0.8.7,OBS,10/03/2025 06:00,24/03/2025 05:59,observe_only,MAP-STD-02,09/03/2025,early image compare run
+CAM-FP2-01,FP2-A,F2_MAIN,FP2,STD,v0.9.3,ADV,24/03/2025 06:00,13/04/2025 21:59,operator_prompt,MAP-STD-02,23/03/2025,prompt rows only
+CAM-FP2-01,FP2-A,F2_MAIN,FP2,STD,v1.0.2,RH_ARM,14/04/2025 06:00,27/04/2025 21:59,route_hold_ready,MAP-STD-02,13/04/2025,main route table armed
+CAM-FP2-01,FP2-A,F2_MAIN,FP2,STD,v1.1.0,RH_LIVE,28/04/2025 06:00,open,route_hold_live,MAP-STD-02,27/04/2025,normal table feed
+CAM-FP3-01,FP3-A,F3_EXP,FP3,EXP,v0.8.7,OBS,10/03/2025 06:00,24/03/2025 05:59,observe_only,MAP-EXP-04,09/03/2025,scuff rows noisy on export wrap
+CAM-FP3-01,FP3-A,F3_EXP,FP3,EXP,v0.9.3,ADV,24/03/2025 06:00,13/04/2025 21:59,operator_prompt,MAP-EXP-04,23/03/2025,advisory prompts sent to table
+CAM-FP3-01,FP3-A,F3_EXP,FP3,EXP,v1.0.2,RH_ARM,14/04/2025 06:00,27/04/2025 21:59,route_hold_ready,MAP-EXP-04,13/04/2025,export route map loaded
+CAM-FP3-01,FP3-A,F3_EXP,FP3,EXP,v1.1.0,RH_LIVE,28/04/2025 06:00,open,route_hold_live,MAP-EXP-04,27/04/2025,normal table feed
+CAM-FP4-01,FP4-A,F4_EXP,FP4,EXP,v0.8.7,OBS,10/03/2025 06:00,24/03/2025 05:59,observe_only,MAP-EXP-04,09/03/2025,scuff rows noisy on export wrap
+CAM-FP4-01,FP4-A,F4_EXP,FP4,EXP,v0.9.3,ADV,24/03/2025 06:00,13/04/2025 21:59,operator_prompt,MAP-EXP-04,23/03/2025,advisory prompts sent to table
+CAM-FP4-01,FP4-A,F4_EXP,FP4,EXP,v1.0.2,RH_ARM,14/04/2025 06:00,27/04/2025 21:59,route_hold_ready,MAP-EXP-04,13/04/2025,export route map loaded
+CAM-FP4-01,FP4-A,F4_EXP,FP4,EXP,v1.1.0,RH_LIVE,28/04/2025 06:00,open,route_hold_live,MAP-EXP-04,27/04/2025,normal table feed
+CAM-FP5-01,FP5-A,F5_RGD,FP5,RGD,v0.8.7,OBS,17/03/2025 06:00,31/03/2025 05:59,observe_only,MAP-RGD-06,16/03/2025,early RGD view check
+CAM-FP5-01,FP5-A,F5_RGD,FP5,RGD,v0.9.3,ADV,31/03/2025 06:00,13/04/2025 21:59,operator_prompt,MAP-RGD-06,30/03/2025,advisory prompts sent to table
+CAM-FP5-01,FP5-A,F5_RGD,FP5,RGD,v1.0.2,RH_ARM,14/04/2025 06:00,27/04/2025 21:59,route_hold_ready,MAP-RGD-06,13/04/2025,RGD route table armed
+CAM-FP5-01,FP5-A,F5_RGD,FP5,RGD,v1.1.0,RH_LIVE,28/04/2025 06:00,open,route_hold_live,MAP-RGD-06,27/04/2025,normal table feed
+CAM-FP5X-01,FP5-X,F5_EXP_TR,FP5,EXP,v0.9.3,ADV,07/04/2025 06:00,27/04/2025 21:59,operator_prompt,MAP-PEND-05X,06/04/2025,view list still moving
+CAM-FP5X-01,FP5-X,F5_EXP_TR,FP5,EXP,v1.0.2,CAL,28/04/2025 06:00,18/05/2025 21:59,map_check,MAP-PEND-05X,27/04/2025,export trial map check
+CAM-FP5X-01,FP5-X,F5_EXP_TR,FP5,EXP,v1.1.0,BYP,19/05/2025 06:00,open,operator_prompt,MAP-PEND-05X,18/05/2025,kept beside FP5 view list
+CAM-FP6-01,FP6-A,F6_MAIN,FP6,RGD,v0.8.7,OBS,17/03/2025 06:00,31/03/2025 05:59,observe_only,MAP-RGD-06,16/03/2025,early RGD view check
+CAM-FP6-01,FP6-A,F6_MAIN,FP6,RGD,v0.9.3,ADV,31/03/2025 06:00,13/04/2025 21:59,operator_prompt,MAP-RGD-06,30/03/2025,advisory prompts sent to table
+CAM-FP6-01,FP6-A,F6_MAIN,FP6,RGD,v1.0.2,RH_ARM,14/04/2025 06:00,27/04/2025 21:59,route_hold_ready,MAP-RGD-06,13/04/2025,RGD route table armed
+CAM-FP6-01,FP6-A,F6_MAIN,FP6,RGD,v1.1.0,RH_LIVE,28/04/2025 06:00,open,route_hold_live,MAP-RGD-06,27/04/2025,normal table feed
+CAM-FP6N-01,FP6-N,F6_NGT,FP6,RGD,v1.1.0-N,RH_ARM,05/05/2025 22:00,21/05/2025 05:59,night_panel,MAP-RGD-06,05/05/2025,night exception rows only
+CAM-FP6N-01,FP6-N,F6_NGT,FP6,RGD,v1.1.0-N,BYP,22/05/2025 00:00,22/05/2025 03:45,lens_clean,MAP-RGD-06,21/05/2025,lens clean count check
+CAM-FP6N-01,FP6-N,F6_NGT,FP6,RGD,v1.1.0-N,RH_ARM,22/05/2025 03:46,open,night_panel,MAP-RGD-06,22/05/2025,night exception rows resumed
+CAM-FP6R-01,FP6-R,F6_REC,FP6,REC,manual-rec,REC,21/04/2025 06:00,open,manual_recovery,MAP-REC-VAR,20/04/2025,recovery sheet camera reference
+CAM-FP7-01,FP7-A,F7_EXP,FP7,EXP,v0.9.3,ADV,07/04/2025 06:00,27/04/2025 21:59,operator_prompt,MAP-EXP-04,06/04/2025,reference route prompts
+CAM-FP7-01,FP7-A,F7_EXP,FP7,EXP,v1.0.2,RH_ARM,28/04/2025 06:00,open,route_hold_ready,MAP-EXP-04,27/04/2025,reference route feed
+CAM-FP8-01,FP8-T,F8_TRIAL,FP8,TRL,vTR-0.6,OBS,14/04/2025 06:00,27/04/2025 21:59,observe_only,MAP-HOLD-8T,13/04/2025,trial carton image compare
+CAM-FP8-01,FP8-T,F8_TRIAL,FP8,TRL,vTR-0.6,ADV,28/04/2025 06:00,18/05/2025 21:59,operator_prompt,MAP-HOLD-8T,27/04/2025,trial prompts only
+CAM-FP8-01,FP8-T,F8_TRIAL,FP8,TRL,vTR-0.6,CAL,19/05/2025 06:00,open,map_check,MAP-HOLD-8T,18/05/2025,route owner map hold
+CAM-FP9-01,FP9-M,F9_MANREC,FP9,REC,manual-rec,REC,01/04/2025 06:00,open,manual_recovery,MAP-NONE,01/04/2025,manual recovery area

@@ -1,0 +1,57 @@
+raw_event_id,camera_event_time,station_ref,route_code,mes_label,line_ref,pack_format_code,camera_build,model_rule,raw_class,raw_score,raw_severity,camera_result,linked_station_event,linked_qp_ref,lot_ref,pallet_ref,export_bucket,raw_note
+RAW-F1-0502-A,02/05/2025 10:33,CAM-FP1-01,FP1-A,F1_MAIN,FP1,STD,v1.1.0,CAM-BRC-02,barcode_read,0.86,amber,hold,EVT-F1-0502-002,QP-2511,LOT-F1A-0502-D1,PAL-F1-1119,main_route,raw barcode read prompt
+RAW-F1-0509-A,09/05/2025 09:48,CAM-FP1-01,FP1-A,F1_MAIN,FP1,STD,v1.1.0,CAM-LAB-04,label_position,0.78,amber,hold,EVT-F1-0509-005,QP-2527,LOT-F1A-0509-D1,PAL-F1-1190,main_route,label edge near lower bound
+RAW-F1-0514-A,14/05/2025 16:27,CAM-FP1-01,FP1-A,F1_MAIN,FP1,STD,v1.1.0,CAM-LAB-04,label_position,0.61,info,clear_after_prompt,EVT-F1-0514-006,QP-2527,LOT-F1A-0509-D1,PAL-F1-1190,main_route,operator panel clear recorded?
+RAW-F2-0506-A,06/05/2025 13:39,CAM-FP2-01,FP2-A,F2_MAIN,FP2,STD,v1.1.0,CAM-BRC-02,barcode_read,0.82,amber,hold,EVT-F2-0506-008,QP-2520,LOT-F2A-0506-D2,PAL-F2-2130,main_route,barcode contrast prompt
+RAW-F2-0512-A,12/05/2025 18:08,CAM-FP2-01,FP2-A,F2_MAIN,FP2,STD,v1.1.0,CAM-LAB-04,label_position,0.76,amber,hold,EVT-F2-0512-010,QP-2534,LOT-F2A-0512-L1,PAL-F2-2183,main_route,label row sent to table
+RAW-F2-0523-A,23/05/2025 20:41,CAM-FP2-01,FP2-A,F2_MAIN,FP2,STD,v1.1.0,CAM-BRC-02,barcode_read,0.84,amber,hold,EVT-F2-0523-012,QP-2564,LOT-F2A-0523-L2,PAL-F2-2266,main_route,late week barcode prompt
+RAW-F3-0505-A,05/05/2025 11:45,CAM-FP3-01,FP3-A,F3_EXP,FP3,EXP,v1.1.0,CAM-INS-05,insert_missing,0.81,amber,hold,EVT-F3-0505-014,QP-2516,LOT-F3A-0505-D1,PAL-F3-3133,main_route,insert view prompt
+RAW-F3-0506-A,06/05/2025 14:29,CAM-FP3-01,FP3-A,F3_EXP,FP3,EXP,v1.1.0,CAM-SEA-07,seal_tamper,0.79,amber,hold,EVT-F3-0506-015,QP-2521,LOT-F3A-0506-D1,PAL-F3-3140,main_route,seal view prompt
+RAW-F3-0508-S,08/05/2025 17:35,CAM-FP3-01,FP3-A,F3_EXP,FP3,EXP,v1.1.0,CAM-SCF-11,scuff_wrap,0.58,trace,clear_after_prompt,EVT-F3-0508-016,QP-2507,LOT-F3A-0429-L1,PAL-F3-3068,history_trace,old scuff prompt linked to QA
+RAW-F3-0520-A,20/05/2025 19:14,CAM-FP3-01,FP3-A,F3_EXP,FP3,EXP,v1.1.0,CAM-BRC-02,barcode_read,0.83,amber,hold,EVT-F3-0520-018,QP-2552,LOT-F3A-0520-L1,PAL-F3-3255,main_route,barcode read prompt
+RAW-F3-0523-A,23/05/2025 13:18,CAM-FP3-01,FP3-A,F3_EXP,FP3,EXP,v1.1.0,CAM-INS-05,insert_missing,0.8,amber,hold,EVT-F3-0523-067,QP-2566,LOT-F3A-0523-D1,PAL-F3-3272,main_route,late insert prompt
+RAW-F4-0507-A,07/05/2025 09:51,CAM-FP4-01,FP4-A,F4_EXP,FP4,EXP,v1.1.0,CAM-INS-05,insert_missing,0.82,amber,hold,EVT-F4-0507-020,QP-2522,LOT-F4A-0507-D1,PAL-F4-4144,main_route,insert view prompt
+RAW-F4-0510-A,10/05/2025 21:30,CAM-FP4-01,FP4-A,F4_EXP,FP4,EXP,v1.1.0,CAM-SEA-07,seal_tamper,0.77,amber,hold,EVT-F4-0510-021,QP-2530,LOT-F4A-0510-N1,PAL-F4-4170,main_route,night seal prompt
+RAW-F4-0519-S,19/05/2025 14:08,CAM-FP4-01,FP4-A,F4_EXP,FP4,EXP,v1.1.0,CAM-SCF-11,scuff_wrap,0.57,trace,clear_after_prompt,EVT-F4-0519-023,QP-2510,LOT-F4A-0503-D1,PAL-F4-4119,history_trace,old scuff prompt linked to QA
+RAW-F4-0522-A,22/05/2025 16:44,CAM-FP4-01,FP4-A,F4_EXP,FP4,EXP,v1.1.0,CAM-BRC-02,barcode_read,0.82,amber,hold,EVT-F4-0522-024,QP-2560,LOT-F4A-0522-L1,PAL-F4-4260,main_route,late barcode prompt
+RAW-F5-0506-A,06/05/2025 09:11,CAM-FP5-01,FP5-A,F5_RGD,FP5,RGD,v1.1.0,CAM-INS-05,insert_missing,0.83,amber,hold,EVT-F5-0506-026,QP-2524,LOT-F5A-0506-D1,PAL-F5-5142,main_route,accessory view prompt
+RAW-F5-0508-A,08/05/2025 23:46,CAM-FP5-01,FP5-A,F5_RGD,FP5,RGD,v1.1.0,CAM-SEA-07,seal_tamper,0.8,amber,hold,EVT-F5-0508-027,QP-2531,LOT-F5A-0508-N1,PAL-F5-5169,main_route,seal view prompt
+RAW-F5-0517-A,17/05/2025 06:57,CAM-FP5-01,FP5-A,F5_RGD,FP5,RGD,v1.1.0,CAM-INS-05,insert_missing,0.84,amber,hold,EVT-F5-0517-029,QP-2544,LOT-F5A-0517-D1,PAL-F5-5241,main_route,accessory view prompt
+RAW-F5-0521-A,21/05/2025 18:22,CAM-FP5-01,FP5-A,F5_RGD,FP5,RGD,v1.1.0,CAM-BRC-02,barcode_read,0.79,amber,hold,EVT-F5-0521-030,QP-2555,LOT-F5A-0521-L1,PAL-F5-5280,main_route,barcode view prompt
+RAW-F5-0524-A,24/05/2025 07:06,CAM-FP5-01,FP5-A,F5_RGD,FP5,RGD,v1.1.0,CAM-SEA-07,seal_tamper,0.78,amber,hold,EVT-F5-0524-068,QP-2569,LOT-F5A-0524-D1,PAL-F5-5294,late_week,late W22 seal prompt
+RAW-F5X-0509-M,09/05/2025 13:04,CAM-FP5X-01,FP5-X,F5_EXP_TR,FP5,EXP,v1.0.2,CAM-MAP-05X,view_list,0.52,trial,map_check,EVT-F5X-0509-031,,LOT-F5X-0509-D1,PAL-F5X-7101,map_check,export trial view check
+RAW-F5X-0516-A,16/05/2025 10:37,CAM-FP5X-01,FP5-X,F5_EXP_TR,FP5,EXP,v1.0.2,CAM-LAB-04,label_align,0.71,trial,prompt,EVT-F5X-0516-032,QP-2541,LOT-F5X-0516-D1,PAL-F5X-7135,trial_branch,trial label prompt
+RAW-F5X-0520-M,20/05/2025 11:22,CAM-FP5X-01,FP5-X,F5_EXP_TR,FP5,EXP,v1.1.0,CAM-MAP-05X,map_pending,0.49,trial,map_check,EVT-F5X-0520-033,,LOT-F5X-0520-D1,PAL-F5X-7150,trial_branch,kept beside FP5 map list
+RAW-F5X-0523-A,23/05/2025 12:01,CAM-FP5X-01,FP5-X,F5_EXP_TR,FP5,EXP,v1.1.0,CAM-INS-05,insert_missing,0.74,trial,prompt,EVT-F5X-0523-034,QP-2565,LOT-F5X-0523-D1,PAL-F5X-7168,trial_branch,trial insert prompt
+RAW-F6-0506-A,06/05/2025 10:13,CAM-FP6-01,FP6-A,F6_MAIN,FP6,RGD,v1.1.0,CAM-INS-05,insert_missing,0.85,amber,hold,EVT-F6-0506-036,QP-2525,LOT-F6A-0506-D1,PAL-F6-1819,main_route,accessory view prompt
+RAW-F6-0508-A,08/05/2025 20:09,CAM-FP6-01,FP6-A,F6_MAIN,FP6,RGD,v1.1.0,CAM-BRC-02,barcode_read,0.82,amber,hold,EVT-F6-0508-037,QP-2532,LOT-F6A-0508-L1,PAL-F6-1831,main_route,barcode row prompt
+RAW-F6-0512-A,12/05/2025 09:44,CAM-FP6-01,FP6-A,F6_MAIN,FP6,RGD,v1.1.0,CAM-INS-05,insert_missing,0.84,amber,hold,EVT-F6-0512-038,QP-2537,LOT-F6A-0512-D1,PAL-F6-1849,main_route,accessory view prompt
+RAW-F6-0521-R,21/05/2025 00:18,CAM-FP6-01,FP6-A,F6_MAIN,FP6,RGD,v1.1.0,CAM-SEA-07,seal_tamper,0.93,red,hold,EVT-F6-0521-014,QP-2556,LOT-F6A-0520-N2,PAL-F6-1884,main_route,seal edge and tamper band high score
+RAW-F6-0521-R2,21/05/2025 00:42,CAM-FP6-01,FP6-A,F6_MAIN,FP6,RGD,v1.1.0,CAM-SEA-07,seal_tamper,0.91,red,hold,EVT-F6-0521-041,QP-2556,LOT-F6A-0520-N2,PAL-F6-1884,main_route,second capture on same pallet
+RAW-F6-0521-C,21/05/2025 02:10,CAM-FP6-01,FP6-A,F6_MAIN,FP6,RGD,v1.1.0,CAM-SEA-07,seal_tamper,0.63,amber,clear_after_prompt,EVT-F6-0521-042,QP-2556,LOT-F6A-0520-N2,PAL-F6-1884,main_route,operator table clear after rework note
+RAW-F6-0522-A,22/05/2025 17:26,CAM-FP6-01,FP6-A,F6_MAIN,FP6,RGD,v1.1.0,CAM-INS-05,insert_missing,0.82,amber,hold,EVT-F6-0522-043,QP-2561,LOT-F6A-0522-L1,PAL-F6-1902,main_route,late accessory prompt
+RAW-F6-0523-A,23/05/2025 08:33,CAM-FP6-01,FP6-A,F6_MAIN,FP6,RGD,v1.1.0,CAM-BRC-02,barcode_read,0.81,amber,hold,EVT-F6-0523-044,QP-2563,LOT-F6A-0523-D1,PAL-F6-1911,main_route,barcode view prompt
+RAW-F6-0524-A,24/05/2025 08:22,CAM-FP6-01,FP6-A,F6_MAIN,FP6,RGD,v1.1.0,CAM-INS-05,insert_missing,0.79,amber,hold,EVT-F6-0524-069,QP-2570,LOT-F6A-0524-D1,PAL-F6-1924,late_week,late W22 accessory prompt
+RAW-F6N-0510-A,10/05/2025 23:04,CAM-FP6N-01,FP6-N,F6_NGT,FP6,RGD,v1.1.0-N,CAM-LAB-04,label_position,0.73,amber,hold,EVT-F6N-0510-045,QP-2533,LOT-F6N-0510-N1,PAL-F6N-2802,night_exception,night label prompt
+RAW-F6N-0518-A,18/05/2025 01:18,CAM-FP6N-01,FP6-N,F6_NGT,FP6,RGD,v1.1.0-N,CAM-LAB-01,label_align,0.42,info,pass,EVT-F6N-0518-046,,LOT-F6N-0517-N1,PAL-F6N-2841,night_exception,night pass row
+RAW-F6N-0522-L1,22/05/2025 00:07,CAM-FP6N-01,FP6-N,F6_NGT,FP6,RGD,v1.1.0-N,CAM-LENS-02,lens_clean,0.48,trace,map_check,EVT-F6N-0522-047,,LOT-F6N-0521-N2,PAL-F6N-2860,count_check,lens clean started
+RAW-F6N-0522-L2,22/05/2025 01:16,CAM-FP6N-01,FP6-N,F6_NGT,FP6,RGD,v1.1.0-N,CAM-LENS-02,lens_clean,0.44,trace,map_check,EVT-F6N-0522-048,,LOT-F6N-0521-N2,PAL-F6N-2861,count_check,count check row one
+RAW-F6N-0522-L3,22/05/2025 02:38,CAM-FP6N-01,FP6-N,F6_NGT,FP6,RGD,v1.1.0-N,CAM-LENS-02,lens_clean,0.46,trace,map_check,EVT-F6N-0522-049,,LOT-F6N-0521-N2,PAL-F6N-2862,count_check,count check row two
+RAW-F6N-0522-L4,22/05/2025 03:44,CAM-FP6N-01,FP6-N,F6_NGT,FP6,RGD,v1.1.0-N,CAM-LENS-02,lens_clean,0.41,trace,pass,EVT-F6N-0522-050,,LOT-F6N-0521-N2,PAL-F6N-2863,count_check,lens clean closed
+RAW-F6R-0507-M,07/05/2025 11:40,CAM-FP6R-01,FP6-R,F6_REC,FP6,REC,manual-rec,CAM-REC-01,rework_label,0.66,trace,recovery_note,EVT-F6R-0507-051,,LOT-F6R-0507-D1,PAL-F6R-6103,recovery_sheet,recovery label note
+RAW-F6R-0515-M,15/05/2025 13:22,CAM-FP6R-01,FP6-R,F6_REC,FP6,REC,manual-rec,CAM-REC-01,rework_seal,0.72,trace,recovery_note,EVT-F6R-0515-052,QP-2539,LOT-F6R-0515-D1,PAL-F6R-6144,recovery_sheet,recovery seal note
+RAW-F6R-0522-M,22/05/2025 10:05,CAM-FP6R-01,FP6-R,F6_REC,FP6,REC,manual-rec,CAM-REC-01,rework_insert,0.69,trace,recovery_note,EVT-F6R-0522-053,,LOT-F6R-0522-D1,PAL-F6R-6189,recovery_sheet,recovery insert note
+RAW-F7-0506-A,06/05/2025 08:11,CAM-FP7-01,FP7-A,F7_EXP,FP7,EXP,v1.0.2,CAM-SUP-09,label_batch,0.88,amber,hold,EVT-F7-0506-054,QP-2518,LOT-F7A-0506-D1,PAL-F7-7102,reference_route,label batch compare row
+RAW-F7-0514-A,14/05/2025 11:19,CAM-FP7-01,FP7-A,F7_EXP,FP7,EXP,v1.0.2,CAM-SUP-09,label_batch,0.9,amber,hold,EVT-F7-0514-055,QP-2536,LOT-F7A-0514-D1,PAL-F7-7148,reference_route,supplier batch compare
+RAW-F7-0521-A,21/05/2025 15:47,CAM-FP7-01,FP7-A,F7_EXP,FP7,EXP,v1.0.2,CAM-LAB-01,label_align,0.43,info,pass,EVT-F7-0521-056,,LOT-F7A-0521-L1,PAL-F7-7190,reference_route,reference pass row
+RAW-F7-0524-A,24/05/2025 11:10,CAM-FP7-01,FP7-A,F7_EXP,FP7,EXP,v1.0.2,CAM-SUP-09,label_batch,0.89,amber,hold,EVT-F7-0524-070,QP-2571,LOT-F7A-0524-D1,PAL-F7-7207,reference_route,label batch compare late row
+RAW-F8-0503-A,03/05/2025 09:25,CAM-FP8-01,FP8-T,F8_TRIAL,FP8,TRL,vTR-0.6,CAM-SEA-TR,seal_tamper,0.87,trial,prompt,EVT-F8-0503-057,QP-2515,LOT-F8T-0503-D1,PAL-F8-8108,trial_branch,trial seal prompt
+RAW-F8-0508-A,08/05/2025 13:55,CAM-FP8-01,FP8-T,F8_TRIAL,FP8,TRL,vTR-0.6,CAM-INS-TR,insert_missing,0.79,trial,prompt,EVT-F8-0508-058,QP-2529,LOT-F8T-0508-D1,PAL-F8-8144,trial_branch,trial insert prompt
+RAW-F8-0516-M,16/05/2025 16:02,CAM-FP8-01,FP8-T,F8_TRIAL,FP8,TRL,vTR-0.6,CAM-MAP-8T,map_hold,0.51,trial,map_check,EVT-F8-0516-059,,LOT-F8T-0516-L1,PAL-F8-8180,map_check,map hold review
+RAW-F8-0520-A,20/05/2025 10:31,CAM-FP8-01,FP8-T,F8_TRIAL,FP8,TRL,vTR-0.6,CAM-LAB-TR,label_position,0.82,trial,prompt,EVT-F8-0520-060,QP-2553,LOT-F8T-0520-D1,PAL-F8-8207,trial_branch,trial label prompt
+RAW-F8-0524-A,24/05/2025 09:18,CAM-FP8-01,FP8-T,F8_TRIAL,FP8,TRL,vTR-0.6,CAM-SEA-TR,seal_tamper,0.86,trial,prompt,EVT-F8-0524-061,QP-2568,LOT-F8T-0524-D1,PAL-F8-8230,trial_branch,late trial seal prompt
+RAW-F9-0509-M,09/05/2025 08:40,CAM-FP9-01,FP9-M,F9_MANREC,FP9,REC,manual-rec,CAM-REC-09,manual_label,0.62,trace,recovery_note,EVT-F9-0509-062,,LOT-F9M-0509-D1,PAL-F9-9101,manual_recovery,manual area note
+RAW-F9-0518-M,18/05/2025 14:21,CAM-FP9-01,FP9-M,F9_MANREC,FP9,REC,manual-rec,CAM-REC-09,manual_insert,0.65,trace,recovery_note,EVT-F9-0518-063,,LOT-F9M-0518-D1,PAL-F9-9133,manual_recovery,manual area note
+RAW-CAL-0510-S,10/05/2025 05:55,CAM-FP3-01,FP3-A,F3_EXP,FP3,EXP,v1.1.0,CAM-SCF-11,scuff_wrap,0.54,trace,map_check,EVT-CAL-0510-064,,LOT-CAL-0510-N1,PAL-CAL-3001,history_trace,wrap scuff check retained for trace
+RAW-CAL-0511-S,11/05/2025 05:57,CAM-FP4-01,FP4-A,F4_EXP,FP4,EXP,v1.1.0,CAM-SCF-11,scuff_wrap,0.55,trace,map_check,EVT-CAL-0511-065,,LOT-CAL-0511-N1,PAL-CAL-4001,history_trace,wrap scuff check retained for trace
+RAW-CAL-0518-F,18/05/2025 05:58,CAM-FP5-01,FP5-A,F5_RGD,FP5,RGD,v1.1.0,CAM-FOC-03,view_focus,0.47,trace,map_check,EVT-CAL-0518-066,,LOT-CAL-0518-N1,PAL-CAL-5001,cal_check,focus check after clean

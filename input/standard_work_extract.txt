@@ -1,0 +1,36 @@
+Extract: final-pack camera route notes / SW-44 family
+
+Source: process-control copy, last local edit 2025-06-02
+
+General note
+
+Camera station result is one input to route release. Camera clear is not ship clear. Stock can move through camera clear and still sit at QHOLD or PALLET_TABLE until the route table is closed.
+
+SW-44 family
+SW-44A: STD routes using MAP-STD-02. Pallet table still in route.
+SW-44B: EXP routes using MAP-EXP-04. Pallet table still in route.
+SW-44C: RGD routes using MAP-RGD-06. Pallet table still in route.
+SW-44X: export trial route, view list not fully signed.
+SW-REC-12: recovery route sheet. Manual recovery notes remain outside the normal route table.
+SW-DRAFT-8: trial carton route. Draft map only, do not pull into the normal release table until route owner signs the map.
+
+Current handling notes
+- FP1 / FP2: SW-44A still live.
+- FP3 / FP4: SW-44B still live.
+- FP5 RGD route: SW-44C still live.
+- FP5X: map pending; keep separate from F5_RGD when using the camera review numbers.
+- F6_MAIN: SW-44C still live. Seal rows stay on the W23 review list.
+- F6_NGT: use the same RGD map, but night exception rows need the count check before they are used in a clean trend.
+- F6_REC: recovery sheet only. Do not mix with the main FP-6 route table.
+- F7_EXP: reference route for the label batch question only.
+- F8_TRIAL: draft route; no signed normal-release map in this copy.
+- F9_MANREC: manual recovery area, no fixed camera map.
+
+Release-state wording
+QHOLD means stock is stopped before route release.
+PALLET_TABLE means the pallet is still at the route table.
+ROUTE_CLEAR means the route table has closed.
+SHIP_CLEAR means stock is available for customer dispatch.
+
+Staffing note
+No final-audit headcount pull is written into this request. If that is wanted later, it needs a separate labour and standard-work change.

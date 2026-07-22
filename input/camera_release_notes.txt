@@ -1,0 +1,47 @@
+Camera build notes - final pack pilot
+
+Extract owner: M. Haines
+Last copied: 2025-06-03
+
+Build v0.8.7
+- Used for early image-compare runs from 2025-03-10.
+- OBS only on the main STD/EXP routes.
+- Export wrap and carton scuff rows were noisy on MAP-EXP-04.
+- Scuff rule CAM-SCF-11 kept for trace because several rows were already raised to QA during the advisory run.
+- No ship-state write in this build.
+
+Build v0.9.3
+- Advisory prompts added to the operator panel.
+- Main prompt classes: label_align, barcode_read, seal_tamper, insert_missing, scuff_wrap.
+- Scuff prompt threshold reduced after W13 review, but historical prompt rows remain in the camera export.
+- FP5X view list still moving; keep the F5_EXP_TR branch on MAP-PEND-05X until the view list is signed.
+- No ship-state write in this build.
+
+Build v1.0.2
+- Route-hold feed armed for MAP-STD-02, MAP-EXP-04 and MAP-RGD-06 from 2025-04-14.
+- Event feed writes to QHOLD or PALLET_TABLE when the route table asks for a hold.
+- Operator prompt still shows the raw class before QA closes the case.
+- Export trial and trial-carton branches not lifted into the normal table by this build.
+
+Build v1.1.0
+- Main route table feed live from 2025-04-28 for STD, EXP and RGD main routes.
+- Raw class list unchanged: label_align, barcode_read, seal_tamper, insert_missing, scuff_wrap.
+- Route table can close stock after operator/table review.
+- Camera clear remains a camera result only. Route state is written by the table.
+- CAM-SCF-11 still appears in history extracts where an old prompt was linked to QA.
+
+Build v1.1.0-N
+- Night exception branch for F6_NGT.
+- Same RGD view map as main FP-6 route.
+- Lens clean rows write a count-check line before the route table is closed.
+- No separate customer/service write from the night branch.
+
+Build vTR-0.6
+- Trial carton branch for F8_TRIAL
+- Trial prompts only; map owner has not moved the branch to the normal release table in this extract.
+- Seal and insert prompts remain visible in the export because the client wanted the trial rows in the wave review.
+
+manual-rec
+- Recovery/manual camera reference only.
+- Used for F6_REC and F9_MANREC notes.
+- Recovery sheet notes do not use the normal route table feed.

@@ -1,0 +1,35 @@
+customer_case_ref,received_date,received_week,build_week,ship_week,route_code,mes_label,old_label,line_ref,lot_ref,pallet_ref,source_view,case_family_ref,market,complaint_class,field_origin_status,maturity_state,linked_qp_ref,credit_case_ref,case_note
+CR-BL-001,24/01/2025,2025-W04,2025-W03,2025-W03,FP1-A,F1_MAIN,FP1,FP1,LOT-F1A-0117-D1,PAL-F1-0902,service_pull,CF-BL-STD-01,UK,label_read,field_origin,mature,,,baseline field case
+CR-BL-002,11/02/2025,2025-W07,2025-W05,2025-W05,FP1-A,F1_MAIN,FP1,FP1,LOT-F1A-0130-L1,PAL-F1-0950,service_pull,CF-BL-STD-02,IE,barcode_read,field_origin,mature,,,baseline field case
+CR-BL-003,29/01/2025,2025-W05,2025-W04,2025-W04,FP2-A,F2_MAIN,FP2,FP2,LOT-F2A-0122-D1,PAL-F2-1911,service_pull,CF-BL-STD-03,UK,label_position,field_origin,mature,,,baseline field case
+CR-BL-004,19/02/2025,2025-W08,2025-W06,2025-W06,FP2-A,F2_MAIN,FP2,FP2,LOT-F2A-0205-L1,PAL-F2-1992,service_pull,CF-BL-STD-04,DE,barcode_read,field_origin,mature,,,baseline field case
+CR-BL-005,31/01/2025,2025-W05,2025-W04,2025-W04,FP3-A,F3_EXP,FP3,FP3,LOT-F3A-0123-D1,PAL-F3-2940,service_pull,CF-BL-EXP-01,UK,insert_missing,field_origin,mature,,,baseline field case
+CR-BL-006,25/02/2025,2025-W09,2025-W07,2025-W07,FP3-A,F3_EXP,FP3,FP3,LOT-F3A-0212-D1,PAL-F3-3012,service_pull,CF-BL-EXP-02,FR,label_read,field_origin,mature,,,baseline field case
+CR-BL-007,03/02/2025,2025-W06,2025-W04,2025-W05,FP4-A,F4_EXP,FP4,FP4,LOT-F4A-0127-L1,PAL-F4-3898,service_pull,CF-BL-EXP-03,UK,seal_mark,field_origin,mature,,,baseline field case
+CR-BL-008,27/02/2025,2025-W09,2025-W07,2025-W08,FP4-A,F4_EXP,FP4,FP4,LOT-F4A-0215-N1,PAL-F4-3970,service_pull,CF-BL-EXP-04,NL,insert_missing,field_origin,mature,,,baseline field case
+CR-BL-009,05/02/2025,2025-W06,2025-W04,2025-W05,FP5-A,F5_RGD,FP5,FP5,LOT-F5A-0128-D1,PAL-F5-4890,service_pull,CF-BL-RGD-01,UK,accessory_missing,field_origin,mature,,,baseline field case
+CR-BL-010,26/02/2025,2025-W09,2025-W07,2025-W08,FP5-A,F5_RGD,FP5,FP5,LOT-F5A-0216-L1,PAL-F5-4972,service_pull,CF-BL-RGD-02,ES,label_read,field_origin,mature,,,baseline field case
+CR-BL-011,06/02/2025,2025-W06,2025-W04,2025-W05,FP6-A,F6_MAIN,FP6,FP6,LOT-F6A-0129-D1,PAL-F6-1690,service_pull,CF-BL-RGD-03,UK,seal_mark,field_origin,mature,,,baseline field case
+CR-BL-012,28/02/2025,2025-W09,2025-W07,2025-W08,FP6-A,F6_MAIN,FP6,FP6,LOT-F6A-0217-N1,PAL-F6-1762,service_pull,CF-BL-RGD-04,BE,accessory_missing,field_origin,mature,,,baseline field case
+CR-PIL-001,07/05/2025,2025-W19,2025-W16,2025-W16,FP1-A,F1_MAIN,FP1,FP1,LOT-F1A-0416-D1,PAL-F1-1402,service_pull,CF-PIL-STD-01,UK,label_read,field_origin,mature,QP-2511,,pilot field case
+CR-PIL-002,20/05/2025,2025-W21,2025-W18,2025-W18,FP1-A,F1_MAIN,FP1,FP1,LOT-F1A-0430-L1,PAL-F1-1468,service_pull,CF-PIL-STD-02,IE,barcode_read,field_origin,mature,QP-2527,,pilot field case
+CR-PIL-003,08/05/2025,2025-W19,2025-W16,2025-W16,FP2-A,F2_MAIN,FP2,FP2,LOT-F2A-0417-D1,PAL-F2-2381,service_pull,CF-PIL-STD-03,UK,label_position,field_origin,mature,QP-2520,,pilot field case
+CR-PIL-004,23/05/2025,2025-W21,2025-W18,2025-W19,FP2-A,F2_MAIN,FP2,FP2,LOT-F2A-0501-L1,PAL-F2-2440,service_pull,CF-PIL-STD-04,DE,barcode_read,field_origin,mature,QP-2534,,pilot field case
+CR-PIL-005,12/05/2025,2025-W20,2025-W16,2025-W17,FP3-A,F3_EXP,FP3,FP3,LOT-F3A-0418-D1,PAL-F3-3310,service_pull,CF-PIL-EXP-01,UK,insert_missing,field_origin,mature,QP-2516,,pilot field case
+CR-PIL-006,27/05/2025,2025-W22,2025-W18,2025-W19,FP3-A,F3_EXP,FP3,FP3,LOT-F3A-0502-D1,PAL-F3-3380,service_pull,CF-PIL-EXP-02,FR,label_read,field_origin,mature,QP-2552,,pilot field case
+CR-PIL-007,13/05/2025,2025-W20,2025-W16,2025-W17,FP4-A,F4_EXP,FP4,FP4,LOT-F4A-0419-L1,PAL-F4-4315,service_pull,CF-PIL-EXP-03,UK,seal_mark,field_origin,mature,QP-2521,,pilot field case
+CR-PIL-008,29/05/2025,2025-W22,2025-W18,2025-W19,FP4-A,F4_EXP,FP4,FP4,LOT-F4A-0503-N1,PAL-F4-4392,service_pull,CF-PIL-EXP-04,NL,insert_missing,field_origin,mature,QP-2530,,pilot field case
+CR-PIL-009,16/05/2025,2025-W20,2025-W17,2025-W17,FP5-A,F5_RGD,FP5,FP5,LOT-F5A-0424-D1,PAL-F5-5408,service_pull,CF-PIL-RGD-01,UK,accessory_missing,field_origin,mature,QP-2524,,pilot field case
+CR-PIL-010,02/06/2025,2025-W23,2025-W19,2025-W19,FP5-A,F5_RGD,FP5,FP5,LOT-F5A-0508-N1,PAL-F5-5169,service_pull,CF-PIL-RGD-02,ES,seal_mark,field_origin,mature,QP-2531,,pilot field case
+CR-PIL-011,19/05/2025,2025-W21,2025-W17,2025-W18,FP6-A,F6_MAIN,FP6,FP6,LOT-F6A-0425-D1,PAL-F6-1842,service_pull,CF-PIL-RGD-03,UK,accessory_missing,field_origin,mature,QP-2525,,pilot field case
+CR-PIL-012,03/06/2025,2025-W23,2025-W19,2025-W20,FP6-A,F6_MAIN,FP6,FP6,LOT-F6A-0512-D1,PAL-F6-1849,service_pull,CF-PIL-RGD-04,BE,barcode_read,field_origin,mature,QP-2537,,pilot field case
+CR-WATCH-001,26/05/2025,2025-W22,2025-W21,2025-W21,FP8-T,F8_TRIAL,FP8,FP8,LOT-F8T-0524-D1,PAL-F8-8230,service_watch,CF-WATCH-TR-01,UK,seal_mark,trial_watch,ageing,QP-2580,CR-F8-238,service watch linked to trial row
+CR-WATCH-002,27/05/2025,2025-W22,2025-W21,2025-W21,FP5-X,F5_EXP_TR,FP5X,FP5,LOT-F5X-0523-D1,PAL-F5X-7168,service_watch,CF-WATCH-TR-02,FR,insert_missing,trial_watch,ageing,QP-2581,CR-F5X-114,service watch linked to trial branch row
+CR-WATCH-003,28/05/2025,2025-W22,2025-W21,2025-W21,FP6-A,F6_MAIN,FP6,FP6,LOT-F6A-0524-D1,PAL-F6-1924,service_watch,CF-WATCH-F6-01,UK,accessory_missing,service_watch,ageing,QP-2582,CR-F6-209,late W22 service watch row
+CR-WATCH-004,02/06/2025,2025-W23,2025-W21,2025-W22,FP8-T,F8_TRIAL,FP8,FP8,LOT-F8T-0524-D1,PAL-F8-8230,service_watch,CF-WATCH-TR-01,UK,seal_mark,repeat_family,repeat_check,QP-2568,CR-F8-238,repeat family row from same trial pallet
+CR-SUP-001,20/05/2025,2025-W21,2025-W19,2025-W19,FP7-A,F7_EXP,FP7,FP7,LOT-F7A-0514-D1,PAL-F7-7148,supplier_notice,CF-SUP-01,UK,label_batch,supplier_watch,supplier_check,QP-2536,,supplier label batch  compare
+CR-SUP-002,24/05/2025,2025-W21,2025-W21,2025-W21,FP7-A,F7_EXP,FP7,FP7,LOT-F7A-0524-D1,PAL-F7-7207,supplier_notice,CF-SUP-01,IE,label_batch,supplier_watch,supplier_check,QP-2571,,late supplier batch compare
+CR-SUP-003,26/05/2025,2025-W22,2025-W19,2025-W20,FP7-A,F7_EXP,FP7,FP7,LOT-F7A-0506-D1,PAL-F7-7102,supplier_notice,CF-SUP-02,DE,label_batch,supplier_watch,supplier_check,QP-2518,,supplier family compare
+CR-CRD-001,27/05/2025,2025-W22,2025-W21,2025-W21,FP8-T,F8_TRIAL,FP8,FP8,LOT-F8T-0520-D1,PAL-F8-8207,customer_credit,CF-WATCH-TR-03,UK,label_position,credit_repeat,credit_check,QP-2553,CR-F8-220,credit row repeats service family
+CR-CRD-002,30/05/2025,2025-W22,2025-W21,2025-W21,FP8-T,F8_TRIAL,FP8,FP8,LOT-F8T-0524-D1,PAL-F8-8230,customer_credit,CF-WATCH-TR-01,UK,seal_mark,credit_repeat,credit_check,QP-2580,CR-F8-238,credit row repeats trial pallet family
+CR-CRD-003,03/06/2025,2025-W23,2025-W21,2025-W21,FP5-X,F5_EXP_TR,FP5X,FP5,LOT-F5X-0523-D1,PAL-F5X-7168,customer_credit,CF-WATCH-TR-02,FR,insert_missing,credit_repeat,credit_check,QP-2581,CR-F5X-114,credit row repeats trial branch family

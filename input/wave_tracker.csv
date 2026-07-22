@@ -1,0 +1,17 @@
+wave_id,tracker_ref,line_ref,route_code,dashboard_label,target_week,ops_stage,camera_mount_state,cost_draw_ref,local_owner,last_touch,tracker_comment
+W22,WT-001,FP1,FP1-A,FP1,2025-W22,June table,bracket fitted,JD-410-A,M Patel,28/05/2025,left in June spend table after W21 tidy
+W22,WT-002,FP2,FP2-A,FP2,2025-W22,June table,bracket fitted,JD-410-B,M Patel,28/05/2025,same camera map family as FP1
+W22,WT-003,FP3,FP3-A,FP3,2025-W22,June table,bracket fitted,JD-421-A,R Stone,29/05/2025,export route running on main map
+W22,WT-004,FP4,FP4-A,FP4,2025-W22,June table,bracket fitted,JD-421-B,R Stone,29/05/2025,export route running on main map
+W22,WT-005,FP5,FP5-A,FP5,2025-W22,June table,bracket fitted,JD-438-A,S Lowe,30/05/2025,RGD route carried in current pack
+W22,WT-006,FP5,FP5-X,FP5,2025-W24,wave tab,map pending,WT-438-X,S Lowe,30/05/2025,export trial kept beside FP5 until map sign-off
+W22,WT-007,FP6,FP6-A,FP-6,2025-W22,June table,bracket fitted,JD-439-A,A Khan,30/05/2025,F6 main route left in June pack
+W22,WT-008,FP6,FP6-N,FP-6,2025-W23,exception line,bracket fitted,EX-439-N,A Khan,31/05/2025,night run carried for count check
+W22,WT-009,FP6,FP6-R,FP-6,2025-W23,recovery sheet,manual recovery cam,RR-439-R,A Khan,31/05/2025,R-route stays on recovery sheet
+W22,WT-010,FP7,FP7-A,FP7,2025-W23,reference line,bracket fitted,REF-452-C,L Green,27/05/2025,kept in view for supplier batch compare
+W22,WT-011,FP8,FP8-T,FP8,2025-W24,wave tab,trial mount,WT-468-T,N Price,31/05/2025,no cost draw this round
+W22,WT-012,FP9,FP9-M,FP9,2025-W24,manual area,no fixed map,MAN-481-M,J Cross,26/05/2025,manual recovery only
+W23,WT-013,FP3,FP3-A,FP3,2025-W23,watch row,bracket fitted,JD-421-A,R Stone,03/06/2025,added after label-batch discussion
+W23,WT-014,FP5,FP5-X,FP5,2025-W24,wave tab,map pending,WT-438-X,S Lowe,03/06/2025,still waiting on export pack view list
+W23,WT-015,FP8,FP8-T,FP8,2025-W24,wave tab,trial mount,WT-468-T,N Price,04/06/2025,client still wants it visible in wave view
+W23,WT-016,FP6,FP6-A,FP-6,2025-W23,watch row,bracket fitted,JD-439-A,A Khan,04/06/2025,seal review carried into W23 notes
