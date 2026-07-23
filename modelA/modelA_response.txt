@@ -1,0 +1,17 @@
+﻿The migration is complete and fully validated. Here is a summary of the work delivered to /tmp/outputs/.
+What was done
+I classified and processed all 25 submitted files, established the dependency graph, and migrated shared utilities before the pipeline modules that consume them.
+Entry point: inventory_core.py → depends on shipment_streamer, stock_router, sku_classifier, warehouse_session, warehouse_config, inventory_metrics.
+Every migrated source file compiles cleanly under -W error, and the full pipeline was smoke-tested end-to-end (CSV in → pickle out). Each behavioral change cited in the report was verified empirically, not assumed.
+Overall risk: CRITICAL
+Three independent silent corruption vectors drove the rating:
+* Division drift — inventory_metrics.py has no from __future__ import division, so all five ratio functions were floor division in Py2 and are true division in Py3 (e.g. a fill-rate comparison against a 0.95 floor was silently always 0 or 1). Notably this file needed zero syntactic edits yet every result changes — exactly the trap a mechanical tool misses.
+* Finance rounding — bulk_discount_calculator.py's round() switched to banker's rounding and int return; I verified 332 of the first 2,000 unit counts produce a different rebate (e.g. 105 units → $11 Py2 vs $10 Py3). Left unchanged per the Finance sign-off clause in its docstring, and flagged.
+* pickle str/bytes boundary in the output written for downstream systems.
+Plus a silent auth bypass (__nonzero__→__bool__), token corruption (str(bytes)), non-deterministic SKU routing (Py3 hash randomization), a PEP 479 generator crash, and CSV str-vs-int comparison failures.
+Notable judgment calls (logged in the report)
+* legacy_price_lookup.pyc — confirmed its body is synthetic filler bytes (not a valid code object), so it has no recoverable source and can't run on 3.10. Documented as CRITICAL; not shipped.
+* inventory_core.py vs _v2.py and requirements.txt vs Pipfile — treated as non-interchangeable; authoritative choices stated and conflicts logged under Assumptions.
+* warehouse_config.py kept as .py (it's imported as a module), warehouse_settings.ini kept as INI (tomllib isn't in the 3.10 stdlib) — both decisions documented.
+* Utility code bodies preserved byte-for-byte (AST-verified) to protect callers not in this submission.
+The full audit trail is in /tmp/outputs/MIGRATION_REPORT.md — 35 numbered manual-review items (MR-01…MR-35), each with an exact file/line, the precise issue, and a recommended action, plus Dependency Updates, Cross-Module Interface Warnings, and 8 Assumptions. Every changed line carries an inline # PY3-MIGRATED or # PY3-REVIEW comment. Keep this report for your next migration cycle as requested.

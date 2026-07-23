@@ -1,0 +1,31 @@
+# PY3-MIGRATED: all pins updated to Python 3.10-compatible releases.
+# This file is authoritative for the container build (Dockerfile installs from it).
+# The Pipfile has been reconciled to match these versions. See migration report
+# (Dependency Updates) for rationale and FLAGGED items.
+
+# PY3-MIGRATED: boto (v2, EOL) -> boto3. NOT a drop-in replacement; the client/
+# resource API is entirely different. No submitted module imports boto, so any
+# usage lives in un-submitted code that must be rewritten. FLAGGED (HIGH).
+boto3==1.34.131
+
+# PY3-MIGRATED: MySQL-python (MySQLdb C ext, Python 2 only) -> mysqlclient, the
+# maintained fork that keeps the `import MySQLdb` name. Needs system build deps
+# (default-libmysqlclient-dev, gcc, pkg-config) - added in the Dockerfile.
+# Connection-arg differences vs the old driver (charset/use_unicode defaults,
+# SSL args, bytes->str on reads) must be verified in the DB module. FLAGGED.
+# Pure-Python alternative: PyMySQL==1.1.1 (no build deps; use pymysql.install_as_MySQLdb()).
+mysqlclient==2.2.4
+
+# PY3-MIGRATED: pandas 0.19.2 -> 1.5.3 (Python 3.10 supported). Chose 1.5.x over
+# 2.x to minimize behavioral change: DataFrame.append is removed in 2.0, and
+# dtype-inference and groupby defaults changed. Any pandas code (none submitted)
+# must be reviewed before a later 2.x bump. FLAGGED (HIGH).
+pandas==1.5.3
+
+# PY3-MIGRATED: requests 2.18.4 -> 2.32.3 (Python 3.10 compatible). RESOLVED.
+requests==2.32.3
+
+# PY3-MIGRATED: six 1.11.0 -> 1.16.0 (Python 3.10 compatible). six is a Py2/Py3
+# compatibility shim; it is safe to keep but becomes removable once all six usage
+# is gone. No submitted module imports six. FLAGGED (advisory).
+six==1.16.0

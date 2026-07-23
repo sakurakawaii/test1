@@ -1,0 +1,14 @@
+﻿The migration is complete and fully validated. All deliverables are in /tmp/outputs/.
+Summary
+I processed 25 files, producing 20 migrated source files plus MIGRATION_REPORT.md. Every migrated file compiles under Python 3, the pipeline runs end-to-end, and each change carries an inline # PY3-MIGRATED / # PY3-REVIEW annotation (98 and 33 respectively) for audit.
+Overall Risk: CRITICAL — driven by several changes that would silently corrupt output rather than fail loudly:
+* bulk_discount_calculator.py — Python 3's banker's rounding changes supplier rebates vs. Python 2 (round(10.5): 11 → 10; verified compute_supplier_rebate(105) returns 10 vs. 11). The docstring's "stable across versions" claim is false. Left intact pending the mandated Finance sign-off, with the Decimal/ROUND_HALF_UP fix staged in-file.
+* inventory_metrics.py — five ratio functions had no __future__ division, so they silently change from integer to float return type and value. Kept true division (correct for the fractional thresholds) and flagged the drift + the cross-module return-type change.
+* shipment_streamer.py — CSV opened 'rb' breaks csv.reader in Py3; field values shift bytes→str across the whole pipeline and the pickle output. Also fixed a PEP 479 generator crash (while True: .next() → for).
+* inventory_core.py — '5' &lt;= 0 on CSV strings raises TypeError in Py3 (reproduced) where Py2 silently returned False; plus the pickle protocol/str/float serialization boundary.
+* stock_router.py — Py3 salts hash(str) per process, breaking the documented "stable" routing; replaced with a process-stable hashlib hash (verified identical across interpreters).
+* warehouse_session.py — __nonzero__ is ignored in Py3 (would silently disable the auth guard) → renamed to __bool__; and str(bytes) token corruption → .decode('ascii').
+Conflicts handled explicitly (logged under Assumptions): inventory_core.py is treated as authoritative over the WIP inventory_core_v2.py; requirements.txt is treated as authoritative over Pipfile (the Dockerfile builds from it), and the two were reconciled.
+Not migrated, documented instead: legacy_price_lookup.pyc (Python 2 bytecode, no source — unrecoverable under Py3; source must be obtained) and the frontend/ React assets (non-Python; API contract noted).
+Dependencies flagged: boto→boto3 (not drop-in), MySQL-python→mysqlclient (build deps added to Dockerfile; connection differences), pandas pinned conservatively to 1.5.3 with breaking-change warnings.
+The report's Cross-Module Interface Warnings section details every signature/return-type/value change that could affect callers not included in this submission — the key input for any future migration pass.
