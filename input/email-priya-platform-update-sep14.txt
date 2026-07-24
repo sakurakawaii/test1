@@ -1,0 +1,65 @@
+From: Priya Nair <p.nair@pitaron.io>
+To: engineering-leads@pitaron.io; platform-eng-all@pitaron.io
+Date: Mon, 14 Sep 2026 08:47:03 +0100
+Subject: EventBridge cutover — consolidated status and confirmed decisions
+
+Leads,
+
+Following last week's sync and the follow-up conversations since, I'm sending this to
+close out the open questions and give everyone a single reference going into the final
+sprint. I've spoken with James, Lena, and the gateway team, and I'm consolidating
+below. Treat this as the current authoritative position from Platform Engineering.
+
+---
+
+**DLQ threshold — confirmed: 3**
+
+After the escalation to Tariq and Nadia's configuration extract, this is resolved.
+The live gateway enforces a threshold of 3 delivery failures before an event moves to
+the Dead Letter Queue. The spec language "5 consecutive failed delivery attempts" was
+a documentation error introduced during initial drafting and has been corrected in the
+v2.1 release notes and the SLA. Teams should build retry logic and alerting around 3.
+The retries-vs-total-attempts question Nadia raised is a naming convention issue in the
+config parameter, not a behavioural difference — Tariq confirmed to Lena that the
+effective threshold is 3 total delivery attempts.
+
+**Rate limit — confirmed: 1200 events/min permanent from November 1**
+
+The infrastructure capacity review is complete. VP sign-off was received on September 12.
+The default EventBridge delivery rate limit will be permanently 1200 events/min effective
+November 1, 2026. This supersedes the v2.1 release notes characterisation of 1200 as
+a temporary migration-window elevation. Teams designing for 1000/min should revise their
+capacity planning. James will update the spec and release notes documentation shortly.
+
+**Partner Notification Feed — Deprecated effective September 15**
+
+After confirming with the data team, Partner Notification Feed is formally reclassified
+from Maintenance to Deprecated, effective tomorrow (September 15). Under the migration
+policy, Deprecated services are subject to the accelerated sunset date of November 30,
+not December 31. The Partner Eng team has been notified separately.
+
+**Analytics Dashboard — must complete by November 15**
+
+Analytics has been flagged as at risk. Given the absence of a confirmed completion date
+and the unverified volume concerns James raised, I'm setting a hard internal deadline of
+November 15 for Analytics to complete migration. This is earlier than the general
+deadline to give us buffer. Tom Becker has been notified.
+
+**LogArchive — exception confirmed for LogArchive and dependent logging services**
+
+The exception granted at the September 10 sync covers LogArchive and any services with
+a direct runtime dependency on the LogArchive storage pipeline. These services are
+exempt from the December 31 deadline pending completion of the storage backend
+migration. I've approved this formally.
+
+**Confirmed complete:** CS Tooling, Billing Sync, Fraud Detection, Payment Gateway
+Webhooks. Platform Engineering sign-off issued for all four as of this email.
+
+---
+
+Questions to #platform-eng. I'll be treating this email as closed — no further
+open-questions threads on these topics please.
+
+Priya Nair
+Platform Engineering Lead
+

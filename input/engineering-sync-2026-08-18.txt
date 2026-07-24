@@ -1,0 +1,69 @@
+platform eng sync — 2026-08-18
+attendees: James, Lena, Connor, Sofia, Wei, Marcus Webb (joining for Risk Alerts item)
+
+---
+
+Quick check-in, main agenda was DLQ/gateway follow-up and migration status.
+
+DLQ threshold — gateway follow-up
+
+James said he'd been chasing the gateway team since the August 5 sync. The engineer who
+owns the delivery configuration (Sven Karlsson) has been on PTO since August 8 and is
+back September 1. James was able to reach one other person on the gateway team who said
+the threshold "should be" 5 per design, but couldn't confirm what's actually in the live
+config without Sven.
+
+Lena: "So we still don't have a confirmed answer."
+James: "No. I'll get it from Sven when he's back."
+
+Decision: continue treating the spec value (5) as the working assumption until Sven
+confirms. Do not publish either number as definitive guidance.
+
+Also — Lena mentioned she'd received a message from someone (didn't catch who) who said
+Priya had confirmed the DLQ threshold is 3 in an email to that team. James said he wasn't
+aware of any such email from Priya and asked Lena to forward it if she got more detail.
+No follow-up on this in the meeting.
+
+Action: James to contact Sven on September 1 for gateway config confirmation.
+
+---
+
+Rate limit
+
+James: capacity review is in its final stages. Expects to have an answer before the
+next sync. Nothing to communicate yet. Confirmed: do not act on any Slack messages about
+permanent 1200.
+
+---
+
+Migration status
+
+Billing Sync: James confirmed done. Sofia to update tracker.
+
+Analytics Dashboard: Connor followed up — IAM provisioning apparently resolved but Aisha
+(the engineer) was still out when Connor checked. No confirmed migration date.
+
+Risk Alerts Service: Marcus joined to give an update. Said the team is "getting close" —
+webhook validation changes are in review, should be merged this sprint. He thinks it'll
+wrap up before end of August. James noted Marcus had said something similar at the last
+sync. Marcus: "I know, but I think we're actually close this time."
+
+Payment Gateway Webhooks: Sofia said she's heard informally from someone on the Payments
+team that the migration may be done. No completion report received yet.
+
+Partner Notification Feed: No update. Still unclear.
+
+LogArchive: James raised that the LogArchive situation may need a formal decision at the
+next sync — their ERP dependency is slipping and December 31 is looking tight for them.
+
+---
+
+Note from Sofia: the August 5 sync notes referenced a confirmation that should have come
+from the July 28 email thread. Reviewing the thread, Connor's July 29 email held off on
+the DLQ change but didn't explicitly resolve the threshold question. Sofia asked whether
+this should be noted as still open. James: "Yes — it's open. We're waiting on Sven."
+
+---
+
+Next sync: 2026-09-10 (skipping 8/25, Marcus and several others unavailable).
+

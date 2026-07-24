@@ -1,0 +1,134 @@
+platform eng sync — 2026-09-10
+attendees: Priya, James, Lena, Connor, Sofia (tech writing), Wei, +Marcus Webb (Risk Eng, guest)
+
+---
+
+EventBridge migration check-in
+
+Priya ran through the tracker. Mixed picture — some services confirmed done, a few
+still uncertain.
+
+Status rundown:
+
+CONFIRMED MIGRATED:
+- CS Tooling — done. No issues.
+- Billing Sync — migrated and verified end of August. James confirmed.
+- Fraud Detection — done per Platform Eng sign-off last month.
+
+NEEDS ATTENTION:
+- Analytics Dashboard — Priya marked "on track" based on an email from Tom Becker, but
+  no hard date. Aisha (the engineer) was on leave, apparently back now. No confirmation
+  since she returned. James flagged volume may be higher than estimated.
+
+- Payment Gateway Webhooks — still In Progress in the tracker but Sofia saw references
+  to a completed migration report. No formal Platform Eng sign-off as of today.
+
+- Risk Alerts Service — James heard from someone that the migration was done last week.
+  Marcus Webb (Risk Eng, on the call) said he wasn't sure — he'd need to check with his
+  team. He thought the webhook validation work was still open.
+  Action: Marcus to confirm Risk Alerts status before next sync.
+
+- Partner Notification Feed — tracker shows Maintenance. Lena received an email from
+  someone on the data team saying it moved to Deprecated. No one in the room had clear
+  visibility. Left open.
+  Action: Connor to confirm with data team owner.
+
+---
+
+LogArchive / infrastructure exception
+
+James explained LogArchive's situation — mid-migration to a new storage backend, slipped
+by a quarter, can't move to EventBridge until backend is stable (Q1 2027 at earliest).
+
+Lena noted Connor's earlier email said "no exceptions to December 31." Connor acknowledged
+that email was sent before he understood the LogArchive situation.
+
+Decision: formal exception for LogArchive past December 31, tied to storage backend
+go-live. One-off, not a general extension.
+Action: James to document exception scope with LogArchive team lead.
+Action: Priya to formally approve once timeline confirmed — she noted she will need:
+  (i) written confirmation of the storage backend dependency from LogArchive's infra lead,
+  (ii) a written scope document confirming which services are covered.
+  Priya: "I won't sign off on an open-ended exception. If the scope isn't in writing by
+  September 30, the exception isn't granted and December 31 stands."
+Action: Sofia — DO NOT update tracker until Priya issues written approval.
+
+---
+
+DLQ threshold — still open
+
+James: "I've been chasing this since Sven got back on September 1. I now have two
+different answers from two different people at the gateway team. One person — who Sven
+pointed me to — said that a configuration change went out in the June 3 maintenance
+window that set the retry threshold to 3. Which would be consistent with the v2.1 release
+notes. The other contact, who Lena's been in touch with, says the threshold has always
+been 5 and that the June 3 change was about something else."
+
+Lena: "I talked to my contact yesterday. She was pretty clear — the design intent was
+always 5 total attempts and the release notes are wrong. But she also said she'd need to
+see the live config to be certain."
+
+Connor: "So we have two people at the gateway team contradicting each other."
+
+James: "Yes. I've now escalated formally to Tariq Bashir, the infrastructure lead, to
+get a written answer. That was this morning — I don't have a response yet."
+
+Priya: "What do we tell teams in the meantime?"
+
+Lena: "The spec says 5. I'd rather give them the spec value with a caveat than give them
+a number we can't verify."
+
+Connor: "That's not the same as confirming it's correct."
+
+Lena: "No, it's not. Which is exactly why we should say: the spec says 5, this is under
+active verification, we'll update when we have written confirmation from infrastructure.
+We shouldn't be saying '5 is confirmed' right now."
+
+James: "Agreed. Working assumption is spec value, flag it as under verification."
+
+[No decision logged — DLQ threshold remains open pending Tariq's response]
+Action: James to share Tariq's written response with the group when received.
+
+---
+
+Rate limit — update
+
+James: "I need to clarify my September 3 email, which a few people have already asked me
+about. I said the permanent 1200 limit was confirmed from November 1. That was premature.
+The capacity review did recommend moving to 1200 permanent and that recommendation was
+approved at director level. But the formal process requires VP of Infrastructure sign-off,
+and that hasn't been issued yet. So it's recommended, informally approved, but not formally
+confirmed."
+
+Connor: "Is November 1 still the plan?"
+
+James: "It's still the target date if sign-off comes through. But I can't say November 1
+is certain. And I definitely shouldn't have sent that email framed the way I did — it
+read as confirmed when it wasn't."
+
+Wei: "So what do teams do?"
+
+James: "Plan for 1000 from January 1 unless you see a formal announcement. If you need
+the elevated limit for parallel running, request the temporary 1200 — that's confirmed
+through December 31. Just don't build for 1200 as your permanent baseline yet."
+
+Action: James to publish a formal announcement when VP sign-off is received.
+
+---
+
+Docs
+
+Sofia flagged:
+- DLQ threshold correction: can't update until Tariq's written confirmation received
+- LogArchive exception: needs formal write-up before Sofia can update tracker
+- Partner Feed and Risk Alerts statuses unresolved
+- v2.1 release notes DLQ section: Sofia asked if she should add a "under review" note.
+  James: "Not yet — adding a caveat to Final release notes is its own process. Let's
+  wait for Tariq's answer first."
+- Rate limit docs: on hold until formal announcement
+
+---
+
+Next sync: 2026-09-17. Marcus and Connor to report back on Risk Alerts and Partner Feed.
+James to share Tariq's response if received by then.
+

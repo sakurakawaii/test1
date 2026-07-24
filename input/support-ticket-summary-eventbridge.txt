@@ -1,0 +1,135 @@
+SUPPORT TICKET SUMMARY — EventBridge Migration Issues
+Compiled by: Support Engineering
+Period: 2026-07-01 to 2026-09-08
+Status: Internal reference only, not published
+
+---
+
+This summary covers support tickets related to EventBridge migration. Provided for
+Platform Engineering awareness ahead of the December removal date.
+
+---
+
+TICKET CATEGORY: Signature Validation Failures
+
+Volume: 11 tickets
+Resolution: Mixed — 8 closed, 3 open
+
+Summary:
+Most tickets involved teams validating against X-PiSync-Signature on EventBridge
+deliveries. EventBridge deliveries carry X-EventBridge-Signature; X-PiSync-Signature
+is not present. Resolved by pointing teams to the v2 spec.
+
+Three tickets remain open. Two involve Risk Alerts Service — reporting intermittent
+signature validation failures on risk.alert_raised events even after updating their
+header reference. Escalated to Platform Engineering 2026-08-29; no response as of
+this summary's compilation date.
+
+Note: The intermittent nature of Risk Alerts failures is consistent with a service
+still handling some events via the legacy path.
+
+One open ticket: a team cited an internal document instructing them to use
+X-EventBridge-Sig (abbreviated, missing the final 'nature'). Support was unable
+to identify the source document. The full correct header name is X-EventBridge-Signature.
+
+---
+
+TICKET CATEGORY: Subscription Registration Errors
+
+Volume: 9 tickets
+Resolution: 7 closed, 2 open
+
+Summary:
+Seven tickets: teams attempting POST /webhooks/register, the legacy PiSync endpoint.
+EventBridge subscriptions must be registered via POST /subscriptions. Resolved by
+directing teams to the correct endpoint.
+
+Two tickets remain open, both involving POST /subscriptions returning 404 in the
+staging environment. Three separate teams have now reported this. Platform Engineering
+has been notified (2026-09-08). No confirmed explanation as of this summary's
+compilation date — Platform Engineering's initial response was that staging 404s are
+a staging-environment issue, not a path change, but the issue is unresolved.
+
+One open ticket from the Vantix partner team requesting confirmation of the correct
+endpoint — they cited conflicting guidance from "an internal migration guide." Source
+of that guide not confirmed.
+
+---
+
+TICKET CATEGORY: DLQ Threshold Confusion
+
+Volume: 8 tickets
+Resolution: 3 closed, 5 open
+
+Summary:
+Teams are citing three different DLQ thresholds when raising tickets: 3, 4, and 5.
+Support has been advising 5 as the working assumption per the v2.0.1 spec, pending
+formal gateway confirmation. Several teams have pushed back citing the v2.1 release
+notes and the SLA v1.0 document, both of which give 3.
+
+Two tickets reference an email from Priya Nair confirming the DLQ threshold as 3
+consecutive failures. Support was unable to locate any such email in the documentation
+package provided by Platform Engineering. Teams citing this should verify directly
+with Platform Engineering.
+
+One ticket specifically asks whether the threshold counts the initial delivery attempt
+or only retries — the answer is not documented in any supplied material. Support has
+escalated this question to Platform Engineering alongside the gateway config request.
+
+One open ticket: a team has built consumer logic based on 5 and is now seeing events
+reaching the DLQ earlier than they expected. They are trying to determine if the actual
+live behavior is 3 total or 4 total (3 retries + initial). This ticket is under active
+investigation.
+
+Recommendation: Platform Engineering should publish a single authoritative statement
+on the DLQ threshold that explicitly addresses whether the initial delivery attempt is
+counted. The current documents use different language ("consecutive failures" vs "retry
+attempts") and teams cannot reconcile them.
+
+---
+
+TICKET CATEGORY: Migration Completion Confirmations
+
+Volume: 4 tickets
+Resolution: All closed
+
+Summary:
+Payment Gateway Webhooks (Payments Eng) submitted a detailed completion report
+2026-08-28 confirming both subscriptions re-registered on EventBridge, signature
+validation functioning, PiSync config removed. Support acknowledged and closed
+2026-08-30. The migration tracker has not been updated to reflect this.
+
+The other three completions (CS Tooling, Billing Sync, Fraud Detection) are consistent
+with the tracker.
+
+---
+
+TICKET CATEGORY: Rate Limit Confusion
+
+Volume: 8 tickets
+Resolution: 5 closed, 3 open
+
+Summary:
+Teams are citing both 1000 and 1200 as the effective permanent rate limit. Following
+James Okafor's September 3 email, several teams updated their capacity planning to
+1200/min from November 1. Support is not in a position to confirm or deny whether
+that email represents confirmed policy. Three tickets remain open pending a formal
+announcement.
+
+---
+
+TICKET CATEGORY: Removal Date Confusion
+
+Volume: 8 tickets
+Resolution: 5 closed, 3 open
+
+Summary:
+Most teams are working from December 31. Three tickets reference a "November 1 soft
+cutoff" — Platform Engineering has not confirmed any such date. Advising December 31
+as the only published date.
+
+---
+
+Compiled for internal use. Do not distribute externally.
+Last updated: 2026-09-08
+

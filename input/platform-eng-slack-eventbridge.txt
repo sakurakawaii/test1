@@ -1,0 +1,108 @@
+#platform-eng — Slack export
+Channel: #platform-eng
+Exported: 2026-09-12
+Messages shown: selected threads, EventBridge rate limits, DLQ threshold, endpoint path
+
+---
+
+[2026-08-05 09:31] Wei Zhang
+heads up - saw someone say EventBridge rate limit is 1200 permanently now, is that right?
+trying to figure out if we should update alerting
+
+[2026-08-05 09:44] Connor Marsh
+I heard the same, not sure of the source
+
+[2026-08-05 09:51] Lena Vasquez
+don't update anything yet - v2.1 release notes say 1200 is temporary through end of year.
+if that changed we'd need a formal announcement
+
+[2026-08-05 10:02] James Okafor
+Lena is right. Nothing confirmed on permanent 1200. I'll post here when there's something
+formal.
+
+---
+
+[2026-08-12 14:33] Connor Marsh
+wanted to close out the DLQ threshold item from my July email thread. I held off on the
+August 5 date and the question is still open — gateway team is looking into it. The spec
+says 5, the release notes say 3, and we don't yet have a confirmed answer on what's
+actually deployed. If you're building now and need a number, use the spec value (5) as a
+working assumption, but know this is under active review.
+
+[2026-08-12 14:39] Wei Zhang
+so neither 3 nor 5 is confirmed?
+
+[2026-08-12 14:41] Connor Marsh
+correct. that's where we are.
+
+[2026-08-12 14:44] Lena Vasquez
+use 5 for planning. will update when we have something from the gateway team.
+
+---
+
+[2026-08-29 10:12] Yusuf Amin
+quick question - is the DLQ threshold 4 or 5? I've seen 5 in some docs and something
+about "4 failures" in an internal wiki page someone linked me to
+
+[2026-08-29 10:21] Wei Zhang
+I've seen 3 and 5. not aware of a 4
+
+[2026-08-29 10:25] Connor Marsh
+there's no authoritative answer yet, the gateway team is still confirming. use 5 as a
+working assumption per the spec. whoever wrote 4 in a wiki may have been counting wrong
+or mixing up retries vs total attempts
+
+[2026-08-29 10:31] Yusuf Amin
+ok thanks. so retries vs total attempts — are those different?
+
+[2026-08-29 10:38] Connor Marsh
+potentially, yeah. the spec says "5 consecutive failed delivery attempts" which sounds
+like total attempts including the first one. if the gateway is configured for "3 retries
+after initial failure" that's 4 total attempts. different. but I don't have confirmed
+numbers either way
+
+[2026-08-29 10:41] Yusuf Amin
+this is not reassuring
+
+[2026-08-29 10:42] Connor Marsh
+I know. we're working on it.
+
+---
+
+[2026-09-03 11:45] Wei Zhang
+saw James's email about permanent 1200 from November 1 - does this mean I can update
+alerting now?
+
+[2026-09-03 11:52] Connor Marsh
+I'd wait. James said he'd update the docs but I haven't seen anything go out yet
+
+[2026-09-03 12:01] Lena Vasquez
+I'd want to see a doc update or formal announcement before acting on it
+
+[2026-09-03 12:09] Wei Zhang
+ok will hold
+
+---
+
+[2026-09-08 15:22] Yusuf Amin
+different question: I tried POST /subscriptions in staging yesterday and got a 404.
+someone in #engineering told me the path is actually /v2/subscriptions now. can anyone
+from platform-eng confirm?
+
+[2026-09-08 15:31] James Okafor
+The spec says /subscriptions. If you're getting 404s in staging, that's a staging
+issue, not a path change. Open a ticket — don't change the path based on what someone
+told you in another channel. I'll look into the staging 404s.
+
+[2026-09-08 15:38] Yusuf Amin
+ok will do. just wanted to flag since two other people on my team hit the same thing
+
+[2026-09-08 15:41] James Okafor
+noted. definitely open a ticket so we have a trail. the documented path is /subscriptions.
+
+[No follow-up on the staging 404 issue as of export date]
+
+---
+
+[No further messages in scope of this export]
+

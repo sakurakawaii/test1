@@ -1,0 +1,59 @@
+platform eng sync — 2026-08-05
+attendees: James, Lena, Connor, Sofia, Wei, Dana (joining late)
+
+---
+
+Quick sync, shorter than usual — several people have conflicts this week.
+
+EventBridge migration status check
+
+James ran through the high-priority items.
+
+Billing Sync: James confirmed this is done as of last week. Sofia to update the tracker.
+
+CS Tooling: Complete. Old news.
+
+Analytics Dashboard: Still listed as IAM-blocked. James said he thought the IAM issue was resolved but wasn't certain. Action: Connor to confirm with Analytics team whether IAM provisioning is done.
+
+Payment Gateway Webhooks: Sofia noted the tracker still says In Progress with a target of August 2026. No completion report received yet.
+
+Risk Alerts Service: Marcus was not on this call. James said Q4 is the plan, no updates.
+
+Partner Notification Feed: Tracker says Maintenance. No updates.
+
+LogArchive: Tracker says December 2026. No updates.
+
+---
+
+DLQ threshold discussion
+
+Connor said he'd pulled back the August 5 threshold change from his email last week, pending confirmation from the gateway team. James said he'd get an answer before the next sync.
+
+Lena raised that the v2.1 release notes and the v2.0.1 spec now contradict each other — release notes say 3, spec says 5. Said this needs to be resolved before anyone publishes migration guidance. James acknowledged, said it's on his list to get the gateway team to confirm which is actually deployed.
+
+Brief discussion about the Webhook Delivery SLA, which also references 3. Connor noted that document was published before the spec update in July. Lena said that makes it worse — two documents now say 3 and the spec says 5, and they haven't been reconciled. James to follow up with gateway team and confirm before next sync.
+
+Action: James to get gateway team confirmation on the live DLQ threshold. Do not publish 3 or 5 as definitive guidance until resolved.
+
+---
+
+Rate limit question
+
+Wei raised again. James said the capacity review hadn't concluded and there was nothing to announce yet on the permanent limit. Said not to act on any Slack discussion about 1200 being permanent.
+
+Lena asked if the temporary elevation was actually being used by anyone. Connor thought Billing Sync had requested it during their parallel run, but wasn't sure if it was still active.
+
+No decisions made on rate limit. James to follow up as part of the capacity review.
+
+---
+
+Draft migration guide
+
+Sofia asked whether the draft migration guide (Connor's document from May) should be pulled from wherever it was circulating. Connor said it was never formally published but he'd seen it shared informally. James said it should be flagged as superseded by any official guidance once the DLQ threshold is resolved — it's got at least one wrong endpoint reference (Sofia: "the /webhooks/register thing?") and Connor confirmed yes.
+
+Action: Connor and Sofia to identify where the draft has been shared and add a clear superseded notice.
+
+---
+
+Next sync: 2026-08-18, Marcus back, will have Risk Alerts update.
+

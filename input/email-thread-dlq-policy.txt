@@ -1,0 +1,134 @@
+From: Connor Marsh <c.marsh@pitaron.io>
+To: platform-eng-all@pitaron.io
+Date: Mon, 28 Jul 2026 09:55:17 +0100
+Subject: Q3 EventBridge rollout — open items and upcoming changes
+
+All,
+
+A few things I want to get in front of people before the end of the month.
+
+**1. DLQ threshold adjustment**
+Following analysis of delivery failure patterns since launch, we're aligning the gateway
+configuration with the v2.1 release notes. The DLQ threshold will be set to 3 consecutive
+delivery failures effective 2026-08-05. This matches the correction we published in the
+release notes. Teams with alerting tuned to a 5-failure assumption should adjust.
+
+**2. Auth credential expiry timeline**
+Reminder that OAuth2 tokens issued for EventBridge use have a 3600-second lifetime. We've
+had a few tickets about stale tokens — make sure your service is refreshing with at least a
+5-minute buffer. The pitaron-auth-client (v2.4+) handles this automatically.
+
+**3. Migration tracker update request**
+Sofia — can you flag which rows in the tracker need the most urgent update?
+
+**4. Staging environment availability**
+The EventBridge staging environment will be in a maintenance window 2026-08-01 from
+02:00–06:00 UTC. Plan around this if you're running integration tests that week.
+
+**5. November 1 date**
+No such date has been agreed by Platform Engineering. The published removal date is
+December 31. I'll get a note out that clarifies this.
+
+Connor
+
+
+---
+
+From: Sofia Andrade <s.andrade@pitaron.io>
+To: Connor Marsh <c.marsh@pitaron.io>
+Cc: platform-eng-all@pitaron.io
+Date: Mon, 28 Jul 2026 11:12:04 +0100
+Subject: Re: Q3 EventBridge rollout — open items and upcoming changes
+
+Connor,
+
+On point 3 — biggest gaps are Payment Gateway Webhooks and Risk Alerts (Q4 target but
+nothing specific). Analytics listed as IAM-blocked but I don't know if that's resolved.
+
+I'll hold off updating until I hear from the teams. Can you chase Payment Gateway?
+
+Sofia
+
+
+---
+
+From: Wei Zhang <w.zhang@pitaron.io>
+To: platform-eng-all@pitaron.io
+Date: Tue, 29 Jul 2026 09:04:51 +0100
+Subject: Re: Q3 EventBridge rollout — open items and upcoming changes
+
+On point 5 — glad to hear it. I've been asked about November 1 by two different teams.
+Can the clarification go out this week?
+
+Also — separately — is there any update on the permanent rate limit question?
+
+Wei
+
+
+---
+
+From: Lena Vasquez <l.vasquez@pitaron.io>
+To: Connor Marsh <c.marsh@pitaron.io>
+Cc: platform-eng-all@pitaron.io
+Date: Tue, 29 Jul 2026 10:38:22 +0100
+Subject: Re: Q3 EventBridge rollout — open items and upcoming changes
+
+Connor,
+
+On point 1 (DLQ threshold) — I want to flag a concern before this goes into effect.
+When I look at the spec (v2.0.1, published July 20), it still says 5. If we're relying on
+the release notes to override the spec, I'd want that formally reviewed. Do we have gateway
+team confirmation that the actual deployed value is 3 and not 5? I haven't seen that
+documented anywhere.
+
+Lena
+
+
+---
+
+From: Connor Marsh <c.marsh@pitaron.io>
+To: platform-eng-all@pitaron.io
+Date: Tue, 29 Jul 2026 13:14:56 +0100
+Subject: Re: Q3 EventBridge rollout — open items and upcoming changes
+
+Wei — on the rate limit, nothing confirmed yet, I'll follow up separately.
+
+Lena — fair point on the DLQ. I'll check with the gateway team to get a definitive answer
+on what the live configuration actually says. Until I've confirmed it, hold off on
+circulating the "3" number as guidance.
+
+Connor
+
+
+---
+
+From: Connor Marsh <c.marsh@pitaron.io>
+To: Lena Vasquez <l.vasquez@pitaron.io>
+Cc: platform-eng-all@pitaron.io
+Date: Tue, 29 Jul 2026 16:47:02 +0100
+Subject: Re: Q3 EventBridge rollout — open items and upcoming changes
+
+Lena,
+
+Following up on the DLQ item from my note on the 26th. I haven't been able to get a
+same-day answer from the gateway team. Given your concern about the spec discrepancy,
+I'm going to hold off on the August 5 date — don't treat that as a commitment, and don't
+update any alerting or consumer logic based on point 1 from my earlier email. I'll bring
+the threshold question to Thursday's sync once I have more information.
+
+The November 1 clarification is still going out this week — that's separate.
+
+Connor
+
+
+---
+
+From: Marcus Webb <m.webb@pitaron.io>
+To: platform-eng-all@pitaron.io
+Date: Wed, 30 Jul 2026 08:22:39 +0100
+Subject: Re: Q3 EventBridge rollout — open items and upcoming changes
+
+On point 4 — thanks for the staging heads up. Risk Eng will work around it.
+
+Marcus
+
