@@ -1,0 +1,25 @@
+﻿Everything validates. Here's the final deliverable summary:
+Deliverables (/tmp/outputs/)
+datecomponents/          # your 9 source files, copied byte-for-byte unmodified
+tests/
+ test_utils.py          # the standard Bedrock Mixin utility suite (verbatim)
+ mixins/                # shared feature mixins: numeric.py, named.py, yeared.py
+ test_base.py  test_minute.py  test_second.py  test_weekday.py
+ test_hour.py  test_month.py   test_season.py  test_duration.py
+ test_rejections.py           # defect proofs (@pytest.mark.reject_verification)
+ test_suggested_features.py   # 6 suggested features (xfail, strict)
+pytest.ini               # registered marks, --strict-markers
+REPORT.md                # full report: behavior tested, defects, coverage accounting
+Results: 260 tests — 252 pass, 8 xfail (suggested features). Coverage: 100% line and 100% branch of all non-rejected code (raw: 94% line; every single missed line/branch was programmatically verified to fall inside the rejected sections listed below).
+⚠️ Critical findings (full details with line numbers in REPORT.md)
+The headline issue: the module does not work on the Python 3.12+ it targets.
+* D1 (critical) — get_args() on a PEP 695 type alias returns () (weekday.py:15, month.py:17, season.py:10, hour.py:18), so _NAMES is empty and no Month/Weekday/Season/Hour can be constructed at all (IndexError for ints, ValueError for every valid name). Fix: get_args(MonthName.__value__). Tests verify the components' logic through Usable… subclasses that follow the documented _NAMES/_MIN/_MAX extension contract.
+* D2a — size() off-by-one (base.py:46): all wrap-around +/- is wrong (Minute(59)+1 == Minute(1); Minute(50)+9 == Minute(0)).
+* D2b — __add__ rebuilds via type(self)(wrapped_int) (base.py:87), silently dropping the year; the _apply_loop year adjustments (month.py:103, season.py:33) are dead code, and last_nth_weekday always raises.
+* D3 — monthrange() February condition is inverted (month.py:42): raises with a year, silently uses 1970 without one.
+* D4 — nth_weekday/last_nth_weekday bodies (month.py:59-70, 84-96) are unreachable (they construct the D1-broken Weekday internally).
+* D5 — duration.py:52: days convert at 8640 s/day instead of 86400 (Duration(days=1).total_seconds() == 8640).
+* Minor — __init__.py never exports duration (M1); create_from accepts bools the constructor rejects (M2); plus three design concerns (C1–C3) noted in the report, e.g. bool(Duration(months=1)) raising ValueError.
+Each defect is proven by a reject_verification test (deselect with -m "not reject_verification" once fixed); none is asserted as expected behavior, and the dead code they cause is excluded from the coverage goal.
+Marks, as requested
+Feature-category marks on every test (construction, normalization, identity, arithmetic, calendar, conversion, comparison, simplification, argparse_support) plus @pytest.mark.static on all 68 tests exercising class-level/static APIs (create_from, normalize_*, argtype, from_seconds, from_timedelta, …) — I interpreted "a mark for each static method" as one shared static mark applied per such test. Suggested features (Weekday.is_weekend/from_date, Month.season()↔Season.months(), Hour.is_am/is_pm, Duration.total_days, Duration.__floordiv__) are xfail(strict=True), so they'll flag loudly the moment you implement them.
