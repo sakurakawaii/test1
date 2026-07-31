@@ -1,0 +1,12 @@
+﻿I've completed the review. The deliverable is at /tmp/outputs/march_madness_code_review.txt.
+Summary of what I did
+I parsed all 11 uploaded files (9 Jupyter notebooks, 1 R Markdown, 1 Excel workbook). Because several notebooks are 0.5–2.7 MB of messy, repetitive scratch work, I built small helper scripts to extract cell sources and (truncated) outputs so I could isolate the parts whose intent is clear and skip ambiguous scratch cells.
+What the report contains
+An individual section for each file, each covering purpose + target tournament year, tech stack, data acquisition, preprocessing, modeling techniques (models/resampling/evaluation), predictions on future brackets, output files (CSVs + saved models), and designed visualizations.
+A comparative section contrasting data acquisition, feature representation, training, model selection/ensembling, prediction method, the actual future-bracket picks, evaluation/visualization, weaknesses/improvements, and repeated-code blocks.
+Key findings worth highlighting
+* Clear lineage. The work splits into an original line (march.Rmd 2024 EDA/GLM, march.ipynb 2024→2025) and a refactored, leakage-aware "epilogue/march2" line that progressively adds neural nets, cross-validation, calibration, and Monte Carlo simulation. I documented which files extend which, and that predicting26.ipynb is the inference-only endpoint consuming saved models.
+* Tournament years are disentangled: Rmd = 2024 (no forecast); march.ipynb = 2025 picks; march2.ipynb = 2025; march2.1/predicting26 = 2026; march2.11 = both 2025 and 2026.
+* Visible predictions are reported (e.g., march.ipynb deterministically picks Arizona as 2025 champion, while the Monte Carlo tracker's sheet picks Houston; 2026 First Four = UMBC/SMU/Lehigh/NC State) — and I flagged that the two methodologies disagree.
+* I followed your constraints: no performance metrics quoted from cell outputs, no fixing of errors (I noted, but did not alter, the non-binomial glm() and the test-set hyperparameter tuning), flagged stale/ambiguous outputs rather than guessing, and kept cross-file comparison in the comparative section.
+A couple of judgment calls I made, in case you'd like them handled differently: I reported Monte Carlo champions qualitatively (predicted winners, not the per-run simulation counts) since those counts shift between reruns, and I treated prediction_results.xlsx as a downstream results artifact rather than source code. If you'd prefer the simulation counts included, or the Excel scorecard's loss/points values summarized, I can add those.

@@ -1,0 +1,13 @@
+﻿I've finished reviewing all 11 uploaded files and written the comparative analysis to /tmp/outputs/march_madness_analysis.txt.
+What I did
+I parsed every notebook cell-by-cell (suppressing bulky outputs to focus on logic), the R Markdown source, and all three sheets of the Excel workbook. The report has two parts, exactly as requested:
+* Part 1 — Individual breakdowns (one self-contained section per file): sections, preprocessing, models, training, prediction, output files (CSVs and saved .pkl/.pth models), a Python/R tech-stack list, and a modeling-techniques summary. I did not compare files against each other here, except to note direct lineage.
+* Part 2 — Comparative analysis: how the files differ on acquiring data, feature engineering, training, and prediction; which files extend others; repeated code blocks with their small differences; visualizations; and a candid weakness/improvement trajectory.
+Key findings worth highlighting
+* Clear lineage and year targets: march.Rmd (2024 EDA) → march.ipynb (2025, kitchen-sink) → march2.ipynb (2025, PyTorch rewrite) → march2.1/march2.11 (CV-tuned + PCA, 2026/both) → predicting26.ipynb (2026 inference). A separate epilogue branch (march_epilogue, SRS and SOS, march epilogue training) rebuilds a leakage-controlled 2010–2026 dataset and retrains on it.
+* Visible predictions on unknown data are captured, e.g. the 2026 submitted bracket crowns Michigan (with specific R64 upset picks like TCU, VCU, Texas), while the 2026-PCA and 2025 simulations both crown Houston — plus the Monte Carlo finish-probability and round-by-round outputs.
+* I followed your constraints: no output-derived metrics (accuracy/AUC/loss) are reported, I did not fix code, and I flagged genuinely ambiguous/commented-out scratch work rather than guessing.
+A few judgment calls I want to flag for you, since they shaped the report's framing:
+* I attributed the workbook's 2026 pca/2025 sheets to the PCA simulator lineage (Files 5/7) based on matching column schemas and the n_components=9 PCA artifacts — this is a reasonable inference, not something stated in the files, so I worded it as such.
+* I noted several weaknesses as-is (e.g., march.Rmd using a Gaussian glm() on a binary target; predicting26 re-fitting a fresh scaler at inference; round-dependent ensemble weights; vintage-mismatched filenames like brackets23.csv for a 2026 sim) without altering any code.
+The deliverable is a single ~800-line text file at /tmp/outputs/march_madness_analysis.txt.

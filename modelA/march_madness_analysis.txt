@@ -1,0 +1,799 @@
+================================================================================
+COMPARATIVE ANALYSIS OF MARCH MADNESS PREDICTION NOTEBOOKS
+================================================================================
+
+Scope of review: 9 Jupyter notebooks (.ipynb), 1 R Markdown file (.Rmd), and 1
+Excel workbook (.xlsx) that together form a multi-year effort to predict NCAA
+Men's basketball tournament ("March Madness") outcomes. Different files target
+different tournament years (2024, 2025, 2026) and this is noted throughout.
+
+How to read this document:
+  * PART 1 gives an individual, self-contained breakdown of each file (sections,
+    preprocessing, models, training, prediction, output files, tech stack, and
+    modeling techniques).
+  * PART 2 is the cross-file comparison (data acquisition, training, prediction,
+    lineage/extensions, repeated code, and notes on weak vs. improved technique).
+
+Conventions / caveats honored in this report:
+  * No performance metrics taken from cell OUTPUT are reported (accuracy, loss,
+    AUC, etc.), because those reflect the most recent hyperparameter run.
+  * Predictions made on unknown/future data (the actual bracket picks) ARE
+    reported, since they are the deliverable of the project.
+  * Where a cell's intent is genuinely ambiguous or is commented-out scratch
+    work, it is either flagged as such or omitted rather than guessed at.
+  * Files are NOT compared inside their own PART 1 section, except to state that
+    one file is an extension/continuation of another.
+
+
+################################################################################
+PART 1 — INDIVIDUAL FILE BREAKDOWNS
+################################################################################
+
+
+================================================================================
+FILE 1: march.Rmd   (R Markdown)   — TARGET YEAR: 2024 (EDA), with 2023 modeling
+================================================================================
+Author header dates this to 2024-03-17. This is an R exploratory-analysis and
+model-selection document, not an automated predictor.
+
+TECH STACK (R packages):
+  * tidyverse (dplyr, tidyr, stringr, readr), lubridate, scales
+  * Visualization: ggplot2, ggthemes, ggrepel
+  * Modeling/selection: MASS, leaps, car (VIF), olsrr (Mallows' Cp, stepwise)
+
+SECTIONS / WHAT IT DOES:
+  * Tournament field setup: hard-codes the full 2024 field of 68 (teams, seeds,
+    regions, conferences, First Four flags) into a `field_of_68` data frame, then
+    removes First Four losers.
+  * Data ingest: reads scraped Sports-Reference CSVs — basic_off, basic_def,
+    advanced_off, advanced_def — for the 2024 field, plus a KenPom CSV. Heavy
+    column cleanup (renaming duplicated headers like W...4/L...5, dropping index
+    columns) and extensive manual team-name normalization to align KenPom names
+    with Sports-Reference names.
+  * Four Factors analysis: computes 3-point rate, FT rate, eFG%, TOV%, ORB%,
+    FT/FGA for offense and defense and joins offense+defense into `four_factors`.
+  * A custom `true_shooting(fga, fta, pts)` helper.
+  * Round-by-round tracking: manually lists R1/R2/R3/R4 winners (r1_winners ...
+    r4_winners) to filter the field as the bracket progresses.
+  * Model-selection block (uses the 2023 "march 23" dataset): builds `final_table`
+    and binary round-achievement indicators (r_32, s_16, e_8, final_4, final,
+    winner), then fits GLMs to predict `final` (reached the championship game).
+
+PREPROCESSING:
+  * Joins basic+advanced offensive and defensive tables into one `final_table`;
+    prefixes opponent/defensive columns with opp_.
+  * Derives ratios (3PAr, FTr) and net rating (ORtg - DRtg).
+
+MODELING TECHNIQUES:
+  * GLM via glm() specified WITHOUT family=binomial, i.e., the default Gaussian
+    family — effectively a linear-probability model on the binary `final` target
+    rather than logistic regression. (Reported as-is; not corrected.)
+  * Stepwise feature selection: forward and backward step() with test="F",
+    between a null (intercept-only) and a full model of ~70 predictors.
+  * A reduced-predictor model is also specified manually.
+  * Evaluation helper glm_eval() prints summary(), extractAIC(), car::vif(), and
+    olsrr::ols_mallows_cp() — i.e., AIC, VIF (multicollinearity) and Mallows' Cp.
+
+VISUALIZATIONS (designed figures, not raw output):
+  * Boxplot of 3P rate vs 3P%, scatter of FT rate vs FT%.
+  * Four-factor scatter/line plots faceted by region, with point size mapped to
+    ORtg/DRtg and shape mapped to "higher_seed", repeated for offense & defense
+    and re-filtered at each bracket round (R32, S16, E8, F4).
+  * Scatter of KenPom AdjEM vs net rating colored by power-conference membership.
+
+PREDICTION ON UNKNOWN DATA:
+  * None produced. This file performs EDA and regression model selection on the
+    prior (2023) season; it does not emit 2024 game predictions or a bracket.
+
+OUTPUT FILES: none written (no save/write calls).
+
+
+================================================================================
+FILE 2: march.ipynb   (Python)   — TARGET YEAR: 2025 (trained on 2024 & earlier)
+================================================================================
+The original, largest, and messiest notebook (≈397 code cells). It is a
+"kitchen-sink" workbench: scraping, database building, and broad model
+experimentation. Much is exploratory scratch work.
+
+TECH STACK:
+  * Scraping: urllib3, BeautifulSoup (bs4), playwright.sync_api (a "manual stealth"
+    Chromium scraper run via multiprocessing), time/sleep.
+  * Data: pandas, numpy; Viz: matplotlib.
+  * scikit-learn: DecisionTreeClassifier, ExtraTree(s), RandomForestClassifier,
+    BaggingClassifier, AdaBoostClassifier, GradientBoostingRegressor,
+    VotingClassifier, StackingClassifier, LogisticRegression, SGDClassifier,
+    SVC/LinearSVC, StandardScaler, make_pipeline, train_test_split,
+    RandomizedSearchCV, PCA, metrics (recall/f1/precision/roc_auc).
+
+SECTIONS / WHAT IT DOES:
+  * "scraping" / "database 2": parses Sports-Reference bracket pages round-by-round
+    to build a matchup table (season, round, team1/team2, seeds, win), and scrapes
+    per-team season stats. Includes helpers for minutes-played, zero-shot-attempt
+    handling (shooting_att_zero), and row building (row_builder, min_p).
+  * "2025 inclusion" / "2024 loop" / "loop for rest of years": extends scraping
+    across multiple seasons.
+  * "model building": trains many models on database.csv (full team1/team2 feature
+    columns, target `win`) using a manual numpy index train/test split.
+  * "ensemble": VotingClassifier over LinearSVC + poly-SVC + logistic pipeline.
+  * Per-round training sections: separate models for "first round", "second round",
+    "third (S16)", "fourth (E8)", "fifth (F4)", "sixth (final)", and "first four".
+  * "random forest" and "four factors" subsections.
+  * "model with diff dataset": a later approach that switches from raw team1/team2
+    columns to team1-minus-team2 DIFFERENCE features, then re-runs per-round
+    logistic models (markdown notes compare scaled/unscaled L1/L2 settings).
+  * "Building 2025 Database": scrapes the 2025 field/stats into team_stats25.csv
+    and database25.csv.
+  * "Predictions": applies trained classifiers to 2025.
+
+PREPROCESSING:
+  * Two paradigms appear: (a) full raw per-team feature set; (b) per-comparison
+    DIFFERENCE features (seed_diff, etc.). StandardScaler used inside logistic
+    pipelines. First Four winners are manually inserted into the Round-of-64
+    frame (dat25_pff) before predicting.
+
+MODELING TECHNIQUES:
+  * Models: Decision tree, Random forest (n_estimators=500), Bagging (nested
+    brute-force loops over depth/estimators/max_samples), Logistic regression
+    (brute-force loop over C with a StandardScaler pipeline), SVC (poly & rbf),
+    LinearSVC, SGDClassifier, and VotingClassifier ensembles.
+  * A bespoke ensemble of 465 (and a 500 variant) depth-1 decision trees, each
+    trained on a RANDOM pair of nonzero-importance features with its own bootstrap
+    split; votes are summed to predict First Four games.
+  * Feature importance from a fitted tree used to prune to nonzero features.
+  * Resampling/selection: manual np.random train/test split; RandomizedSearchCV
+    imported; grid-style brute-force loops for hyperparameters.
+  * Evaluation: .score(), precision/recall/f1/roc_auc imported.
+
+PREDICTION ON UNKNOWN DATA (2025):
+  * Round-by-round predictions produced by applying a VotingClassifier
+    (SGD + Bagging + AdaBoost) and other fitted models to the 2025 matchup frame
+    (predict outputs a pred_win column per matchup). First Four is predicted via
+    the 465-tree ensemble and via vot_all. The bracket is advanced MANUALLY: the
+    user hard-codes each round's matchups (e.g., Round-of-64 additions Duke,
+    Illinois, Auburn, Ole Miss vs. First Four winners) and re-predicts.
+  * 2025 First Four set used includes Saint Francis (PA), North Carolina,
+    Mount St. Mary's, Xavier, Alabama State, San Diego State, American, Texas.
+
+OUTPUT FILES (written via to_csv):
+  * team_stats.csv, team_stats2.csv, team_stats24.csv, team_stats25.csv,
+    25teamstats.csv, matchups.csv, matchups25.csv, database.csv, database2.csv,
+    database25.csv. (Also reads team_stats*.csv / database*.csv.)
+  * No persisted model artifacts are saved in this file.
+
+
+================================================================================
+FILE 3: march2.ipynb   (Python)   — TARGET YEAR: 2025 (trained on 2024 & earlier)
+================================================================================
+A refactor that standardizes the feature design and introduces a PyTorch neural
+network plus a tree/boosting ensemble and a Monte Carlo bracket simulator.
+
+TECH STACK:
+  * torch (custom nn.Module), torch.utils.data.DataLoader, torchviz.make_dot.
+  * scikit-learn: StandardScaler, train_test_split, DecisionTreeClassifier,
+    RandomForestClassifier, AdaBoostClassifier, VotingClassifier,
+    calibration_curve, metrics (roc_curve/auc/roc_auc_score, log_loss).
+  * xgboost.XGBClassifier; scipy.optimize.minimize; pickle; pandas/numpy/matplotlib.
+  * A playwright stealth scraper cell is present at the top (same as File 2).
+  * google.colab.files for downloads.
+
+SECTIONS / WHAT IT DOES:
+  * "Load in Data": reads database2.csv + database25.csv.
+  * "making mirrored dataset": builds DIFFERENCE features (team1 - team2) for a
+    curated set (seed, SRS, SOS, off_rtg, def_rtg, pace, eFG, ORB_pct, TOV_pct,
+    FT_FGA, 3PAr) plus net_eFG and net_TOV_pct; then DATA AUGMENTATION by stacking
+    a "mirrored" copy with negated diffs and flipped label (y -> 1-y) so team
+    ordering carries no signal.
+  * "batch loader": custom Dataset + DataLoader (batch size 35). (The class is
+    named HousingDataset — a leftover name from a housing tutorial.)
+  * "Model Training": manual PyTorch training loop.
+  * "Making Trees" / "learning XGB" / "looping XGB" / "random forest" / "ada".
+  * "Data Process with a Valid Set": re-split adding a validation set; re-uses the
+    SAME fitted scaler across train/valid/test (markdown explicitly notes this was
+    a fix for an earlier scaling-leakage bug).
+  * "voting" (two NNs; four classifiers) and "finding right voting combo".
+  * "saving models".
+  * Monte Carlo bracket simulation ("MC_MM") on the 2025 field.
+
+PREPROCESSING:
+  * Diffs + mirrored augmentation; StandardScaler fit on train only; conversion to
+    float32 torch tensors.
+
+MODELING TECHNIQUES:
+  * Neural network: an evolving nn.Module. The final architecture is an input
+    Linear(bias=False) + BatchNorm1d, N hidden Linear+BatchNorm blocks, ReLU,
+    Dropout, a Linear output and Sigmoid. Loss BCELoss; optimizer Adam with
+    weight_decay (L2); manual early stopping (patience=20) tracking best
+    validation loss and restoring best state_dict.
+  * Decision threshold tuning: sweeps threshold 0..1 and maximizes TPR - FPR
+    (Youden's J) on the test set; ROC curve and AUC computed.
+  * Model calibration: calibration_curve (reliability diagram).
+  * Trees/boosting: XGBClassifier (with looping over params), RandomForest, Ada.
+  * Voting: weighted soft-vote combining NN + trees; a weight search explores
+    coefficient sets (markdown records two candidate weightings for 2 vs 4 models).
+  * A custom error_measures() prints accuracy/TPR/FPR/precision from a confusion
+    count (used for inspection, not reported here).
+
+MODEL PERSISTENCE (saved artifacts):
+  * torch.save of best NN states: "mod13v2.pth" and "mod11.pth".
+  * pickle of StandardScaler ("standard_scaler.pkl"); reads
+    random_forest_model.pkl, ada_boost_model.pkl, XGBoost_model.pkl,
+    standard_scaler-2.pkl (models saved/used across the project).
+
+PREDICTION ON UNKNOWN DATA (2025):
+  * A Monte Carlo simulator (MC_MM) plays the 2025 bracket round-by-round: for each
+    game it computes the ensemble win probability and draws a random number to pick
+    a winner, recording how far each team advances ("finishes"). Run for 5,000
+    iterations (a 50k-iteration artifact is also written).
+
+OUTPUT FILES:
+  * finishes.csv, finishes50k.csv (per-team round-reached tallies for 2025).
+  * Model artifacts above. Reads 25teamstats.csv, database25.csv, finishes-2.csv.
+
+
+================================================================================
+FILE 4: march2.1.ipynb   (Python)   — most elaborate ML pipeline; 2026 bracket sim
+================================================================================
+The most methodologically advanced notebook. Replaces manual loops with
+cross-validated hyperparameter search (skorch + scikit-learn), adds a PCA track,
+a leakage-safe train/valid/test protocol, and principled ensemble-weight
+optimization. Its saved models carry a "23" suffix (a 2023-holdout generation).
+
+TECH STACK:
+  * skorch.NeuralNetClassifier (+ EarlyStopping, ValidSplit) wrapping the torch
+    Model; torch.
+  * scikit-learn: RandomizedSearchCV, GridSearchCV, LogisticRegressionCV (also
+    LassoLarsCV/ElasticNetCV imported), SGDClassifier, SVC, RandomForest, Ada,
+    GradientBoosting, Bagging, VotingClassifier, Pipeline, StandardScaler, PCA,
+    metrics (roc_auc_score, roc_curve/auc, log_loss), calibration_curve.
+  * xgboost; scipy.optimize.minimize, scipy.stats; statsmodels
+    variance_inflation_factor (VIF, mostly commented out); plotnine; pickle;
+    google.colab.files.
+
+SECTIONS / WHAT IT DOES:
+  * "init": loads database2.csv + database25.csv; builds diffs + mirrored
+    augmentation (same design as File 3); train/test split (test_size 0.3).
+  * "using skorch": wraps the NN in NeuralNetClassifier with
+    BCEWithLogitsLoss and tunes via RandomizedSearchCV (n_iter=250, cv=5,
+    scoring neg_log_loss) over lr, n_layers, hidden_dim, dropout, weight_decay.
+  * "manual": a manual torch training loop variant with early stopping.
+  * "trees" + "looping": RandomizedSearchCV for RandomForest, AdaBoost, Bagging,
+    GradientBoosting, XGB, and SVC (probability=True); LogisticRegressionCV and an
+    SGD pipeline. Per-model pickles are saved.
+  * "Voting": combines up to 9 base learners; weights chosen TWO ways — (1) random
+    weight sampling keeping the lowest log-loss set, and (2) scipy.optimize.minimize
+    (SLSQP) with a sum-to-one constraint and [0,1] bounds minimizing log loss; an
+    optimal probability threshold (tau) is chosen from the ROC curve.
+  * "valid set voting": repeats weight selection on a held-out VALIDATION set
+    (leakage-aware), distinct from the test set.
+  * "PCA": a Pipeline(StandardScaler -> PCA(n_components=i)); NN/SVC/voting are
+    refit on principal components, with CV, and logged.
+  * "bracket sim": a Bracket class + Monte Carlo simulator, in both non-PCA and
+    PCA variants, reading the 2026 inputs (matchups26/teamstats26/database26).
+
+PREPROCESSING:
+  * Diffs + mirrored augmentation; StandardScaler; optional PCA dimensionality
+    reduction; train/valid/test partitioning.
+
+MODELING TECHNIQUES:
+  * Cross-validated randomized hyperparameter search for essentially every model
+    family (neural net, RF, Ada, Bagging, GBM, XGB, SVC, SGD, logistic-CV).
+  * Soft-voting ensemble with optimized weights (stochastic search AND constrained
+    numerical optimization) plus ROC-based threshold selection.
+  * PCA-based modeling track for comparison.
+  * Evaluation: ROC/AUC, log loss, calibration; VIF available (commented).
+
+MODEL PERSISTENCE:
+  * pickles: nn_23.pkl, log_23.pkl, random_forest_model.pkl, ada_boost_model.pkl,
+    bagging_classifier_model.pkl, gradient_boosting_model.pkl, XGB_model.pkl,
+    SVC_model.pkl, Logistic_Regression_model.pkl, SGD_model.pkl, and
+    {model}_23.pkl per model; torch.save "mod23.pth"; standard_scaler.pkl.
+
+PREDICTION ON UNKNOWN DATA (2026):
+  * Monte Carlo bracket simulation over the 2026 field (non-PCA and PCA variants);
+    per-round predictions saved to r64preds.csv / r64preds_pca.csv and simulated
+    brackets to brackets23.csv / brackets23_pca.csv (the "23" here is a carried-over
+    filename from the model generation, while the simulated field is 2026).
+
+OUTPUT FILES:
+  * brackets23.csv, brackets23_pca.csv, brackets{N}.csv, brackets{N}_pca.csv,
+    r64preds.csv, r64preds_pca.csv, accuracy.csv, hyperparameters.csv,
+    pca_accuracy.csv(+2,+3), pca_hyperparameters.csv(+2,+3), X_df.csv, plus the
+    pickles/.pth above. Reads database2/25/26, matchups26, teamstats26, and the
+    pca_* logs.
+
+
+================================================================================
+FILE 5: march2.11.ipynb   (Python)   — TARGET YEARS: 2025 AND 2026 (PCA ensemble)
+================================================================================
+A condensed, cleaned pipeline that trains the ensemble, fixes a PCA component
+count, and runs the Monte Carlo simulator on BOTH the 2025 and 2026 fields. This
+is the most likely source of the workbook's "2025" and "2026 pca" sheets.
+
+TECH STACK:
+  * torch + skorch (NeuralNetClassifier, EarlyStopping, ValidSplit); xgboost.
+  * scikit-learn: PCA, Pipeline, StandardScaler, RandomizedSearchCV/GridSearchCV,
+    LogisticRegressionCV, SGDClassifier, SVC, RandomForest/Ada/GBM/Bagging,
+    DecisionTree, metrics (log_loss, accuracy, precision, roc_auc/roc_curve/auc).
+  * scipy.stats (loguniform/uniform), scipy.optimize.minimize; plotnine; pickle;
+    google.colab.files; matplotlib.
+
+SECTIONS / WHAT IT DOES:
+  * "init": loads database2.csv + database25.csv; diffs + mirrored features.
+  * "model training": fits/loads base learners; a PCA Pipeline is tuned over
+    n_components in a loop and then FIXED at n_components = 9
+    ("scaler_plus_PCA_fitted_13.pkl" is pickled/loaded); per-model "_9_pca" pickles
+    are saved (nn_9_pca, rf_9_pca, ada_9_pca, xgb_9_pca, sgd_9_pca, svc_9_pca,
+    bag_9_pca, gb_9_pca, log_9_pca).
+  * "voting": optimized-weight soft vote (as in File 4).
+  * "bracket sim": Bracket class + MC_MM simulator.
+  * "Running on 2025": reads matchups25.csv, 25teamstats.csv, database25.csv and
+    simulates the 2025 bracket.
+  * Also reads 2026 inputs (database26/teamstats26/matchups26) for the 2026 run.
+  * "Last Viz": plotnine figure(s).
+
+MODELING TECHNIQUES:
+  * Same family as File 4 but consolidated, with PCA(n_components=9) as the chosen
+    representation; CV'd model training; optimized voting weights; MC simulation.
+
+PREDICTION ON UNKNOWN DATA (2025 & 2026):
+  * Monte Carlo simulated brackets and per-team finish distributions for both years.
+
+OUTPUT FILES:
+  * brackets25.csv, brackets_25.csv, brackets_pca_9.csv, r64preds.csv,
+    brackets{N}.csv, and the "_9_pca" model pickles + PCA pipeline pickle.
+
+
+================================================================================
+FILE 6: march26_scrape.ipynb   (Python)   — TARGET YEAR: 2026 + historical 2000-2025
+================================================================================
+The dedicated data-acquisition and post-hoc analysis notebook for the 2026 cycle.
+Self-contained and relatively clean.
+
+TECH STACK:
+  * urllib3 + BeautifulSoup (soupify helper); requests; cloudscraper (commented).
+  * pandas, numpy; matplotlib; plotnine (ggplot-style figures); time/sleep.
+
+SECTIONS / WHAT IT DOES:
+  * "scraping school stats": pulls 2026 team and opponent season totals from
+    Sports-Reference, coerces to numeric, derives DRB from TRB-ORB.
+  * Advanced-metric engineering: possessions estimate, ORtg/DRtg, pace,
+    per-100-possession and per-game stats, eFG, TS, net rating, FTr, FT/FGA, TOV%,
+    ORB%, Pythagorean wins/losses, 3PAr (offense and opponent mirrors).
+  * "scraping bracket": parses the 2026 bracket into region/team/seed tables and a
+    First Four structure; applies a team-name replacement map (e.g., Connecticut->
+    UConn, Brigham Young->BYU).
+  * "making matchups df": builds team1/team2 matchup frames and merges team stats
+    into modeling-ready databases.
+  * "after tourney": reconstructs the 2026 results bracket and scores the author's
+    predictions (reads prediction_resultsCSV.csv with Points/Correct/bce_loss/
+    on_path/Upset columns).
+  * "analysis": a bootstrap study (B=5000) comparing 2026 upset rates to 2000-2025,
+    under several upset definitions (seed-difference threshold "diff"); markdown
+    weighs three bootstrap designs. Also a Round-64+32 variant.
+  * "scraping stats from 2000 to 2009": scrapes historical brackets and game logs,
+    subtracting tournament-game box scores from season totals to recover
+    REGULAR-SEASON stats, plus SRS/SOS.
+
+MODELING / STATISTICAL TECHNIQUES:
+  * No predictive model training here. Technique of note is nonparametric
+    BOOTSTRAP resampling for inference on upset rates.
+
+VISUALIZATIONS (designed figures):
+  * matplotlib boxplots of bootstrap upset-rate intervals per seed-diff threshold,
+    with 95% interval lines and the 2026 rate overlaid (and a Round-64/32 version).
+  * plotnine bar charts: "Max Possible Points Following Each Round" and "Points
+    Earned Grouped by Round" (Michigan team colors), with correct-pick annotations.
+  * NOTE: one matplotlib bar-label cell errors (TypeError on plt.text with array
+    args); reported as-is, not fixed.
+
+PREDICTION ON UNKNOWN DATA:
+  * None generated here; this notebook FEEDS the predictors and later AUDITS their
+    2026 results.
+
+OUTPUT FILES:
+  * stats26.csv, teamstats26.csv, matchups26.csv, firstFour_matchups.csv,
+    database26.csv, ff_database26.csv, MMresults.csv, url_keys.csv,
+    teamstats2000s.csv, tourney_stats2000.csv, tourney_opp_stats2000.csv.
+
+
+================================================================================
+FILE 7: predicting26.ipynb   (Python)   — TARGET YEAR: 2026 (inference + simulation)
+================================================================================
+The 2026 inference/deployment notebook. It loads the previously trained ensemble
+and produces the actual 2026 bracket predictions and simulations.
+
+TECH STACK:
+  * torch (re-declares the same BatchNorm Model class), pickle.
+  * scikit-learn: AdaBoost/RandomForest/VotingClassifier, DecisionTree,
+    StandardScaler; xgboost; pandas/numpy; collections.Counter; time;
+    google.colab.files.
+
+SECTIONS / WHAT IT DOES:
+  * "Loading in Models": loads NN weights from mod13v2.pth (13-feature model),
+    plus random_forest_model.pkl, ada_boost_model.pkl, XGBoost_model.pkl and
+    standard_scaler-2.pkl.
+  * "First Four": builds the First Four matchup frame from ff_database26.csv /
+    matchups26.csv (splitting the "A/B" team2 strings) and predicts.
+  * "Rest of field": merges 2026 team stats into matchups; applies the SAME diffs +
+    mirrored feature construction as the training notebooks.
+  * "specific rounds": hard-codes the actual Round-of-32 and Sweet-16 participants
+    to generate round-specific predictions as the tournament progresses.
+  * "Simming": a Bracket class + MC_MM Monte Carlo simulator.
+  * "Nooticing" / "R64" / "finishes": post-processing and matchup investigation.
+
+PREPROCESSING:
+  * Diffs + mirrored features; prediction uses a SYMMETRIC averaging trick:
+    predict team1-vs-team2 and the mirrored team2-vs-team1, then report
+    avg = (p + (1 - p_mirror)) / 2. (Note: a NEW StandardScaler is fit on the
+    prediction frame here rather than reusing the loaded training scaler —
+    reported as-is.)
+
+MODELING TECHNIQUES:
+  * Soft-voting ensemble of NN + RandomForest + AdaBoost + XGB with explicit
+    weights. Two weightings appear: First Four uses all four models
+    [nn≈0.444, ada≈0.165, rf≈0.329, xgb≈0.062]; later rounds use NN+Ada only
+    [0.556, 0.444]. A log_odds() helper converts probabilities to a confidence.
+  * Monte Carlo bracket simulation for n = 10,000 brackets; tracks per-team finish
+    round, champion counts, and records every simulated game.
+  * Analysis utilities: bracket_signature + Counter to find recurring full-bracket
+    outcomes; matchup_investigator to get head-to-head win shares across sims.
+
+PREDICTION ON UNKNOWN DATA (2026) — visible predictions:
+  * Produces R64_preds.csv (per-game averaged win probabilities) and a 10,000-sim
+    finish-probability table (26finishes10k.csv) giving each team's chance of
+    reaching each round.
+  * Round-specific frames reflect the real bracket as it unfolded: First Four
+    winners treated as {Howard, Miami (OH), Prairie View A&M, Texas}; hard-coded
+    Round-of-32 and Sweet-16 fields (e.g., Duke, St. John's, Houston, UConn,
+    Florida, Arizona, Texas, Tennessee, Michigan, etc.).
+
+OUTPUT FILES:
+  * R64_preds.csv, brackets.csv, brackets1000.csv, brackets{N}.csv,
+    26finishes10k.csv. Reads ff_database26/matchups26/teamstats26, brackets*.csv.
+
+
+================================================================================
+FILE 8: march_epilogue.ipynb   (Python)   — TARGET SPAN: 2010-2026 data building
+================================================================================
+A data-engineering notebook that builds a larger, leakage-controlled historical
+dataset spanning 2010-2026.
+
+TECH STACK:
+  * urllib3 + requests + cloudscraper + BeautifulSoup (Comment, Tag) for scraping
+    comment-embedded Sports-Reference tables; pandas/numpy; matplotlib;
+    time/sleep; google.colab.files.
+
+SECTIONS / WHAT IT DOES:
+  * Scrapes Division-I team season-total stats for 2010 then 2011-2026, including
+    logic to read tables hidden inside HTML comments and helpers (get_table_ids,
+    get_columns, comment_helper); a google_search helper assists name matching.
+  * "no_leakage" construction: joins a season-level stats frame ("combined",
+    season/team keys) with an externally computed SRS/SOS/Rating frame
+    ("leakage", year/abbr keys) — excluding that frame's own team/MoV columns —
+    to REPLACE Sports-Reference SRS/SOS (which can embed tournament games) with
+    leakage-free values. Produces no_leakage / df_noLeaks_10-26.
+  * Builds the multi-season matchup table (matchups1025) and merges no-leakage
+    team stats onto both sides (team1/team2).
+
+PREPROCESSING/TECHNIQUE:
+  * Primarily ETL, name normalization (abbr maps, get_caps helper), and a
+    deliberate anti-leakage join. No model training.
+
+PREDICTION ON UNKNOWN DATA: none (data preparation only).
+
+OUTPUT FILES:
+  * teamstats10.csv, teamstats10_d1.csv, teamstats10_PREFIX_d1.csv,
+    teamstats10-26_d1.csv, no_leakage.csv, df_noLeaks_10-26.csv,
+    matchups1025.csv, SRS_SOS_fixed_abbr.csv.
+
+
+================================================================================
+FILE 9: march epilogue training.ipynb   (Python)   — TARGET SPAN: 2010-2026
+================================================================================
+Trains/refreshes models on the leakage-controlled 2010-2026 dataset produced by
+File 8 and the SRS/SOS file (File 10). It is a continuation of the march2 modeling
+line onto a larger, cleaner dataset.
+
+TECH STACK:
+  * pandas/numpy; urllib3 + BeautifulSoup (to (re)scrape 2010-2026 bracket matchups);
+    torch (reloads the BatchNorm NN); scikit-learn RandomForestClassifier,
+    AdaBoostClassifier, StandardScaler, train_test_split, RandomizedSearchCV,
+    precision_score; scipy.stats.uniform; pickle.
+
+SECTIONS / WHAT IT DOES:
+  * "fixing matchups and building db": scrapes bracket results 2010-2026 (skipping
+    2020, the cancelled tournament), merges with SRS_SOS_fixed_abbr.csv and
+    teamstats_10-26_d1_FIXED.csv to emit database10-26.csv.
+  * "training": builds diffs + mirrored features (same design as march2), splits
+    train/test, trains RandomForest and tunes it with RandomizedSearchCV
+    (n_iter=100, scoring neg_log_loss) over criterion/max_depth/min_samples_*/
+    max_features; inspects feature importances and precision.
+  * Loads the existing AdaBoost (ada_boost_model.pkl), StandardScaler
+    (standard_scaler-2.pkl) and the 13-feature NN (mod13v2.pth).
+  * "writeup": markdown commentary.
+
+MODELING TECHNIQUES:
+  * RandomForest with cross-validated RandomizedSearchCV (log-loss scoring);
+    reuse of previously trained Ada + NN + scaler; diffs + mirrored augmentation;
+    evaluation via accuracy and precision_score and feature importances.
+
+PREDICTION ON UNKNOWN DATA:
+  * No new bracket prediction is emitted here; it produces the retrained model and
+    the 2010-2026 modeling database for downstream use.
+
+OUTPUT FILES:
+  * database10-26.csv, matchups1026.csv, teamstats_10-26_d1_FIXED.csv.
+    Reads SRS_SOS_fixed_abbr.csv, teamstats_10-26_d1_FIXED.csv, matchups10xx.csv.
+
+
+================================================================================
+FILE 10: SRS and SOS pray for me.ipynb   (Python)   — supporting computation
+================================================================================
+Computes Simple Rating System (SRS) and Strength of Schedule (SOS) from scraped
+schedules, producing the leakage-free ratings consumed by the epilogue files.
+
+TECH STACK:
+  * urllib3 + requests + cloudscraper + BeautifulSoup for schedule scraping;
+    pandas/numpy; scipy (linalg, sparse, sparse.linalg.spsolve); matplotlib;
+    time/sleep; google.colab.files.
+
+SECTIONS / WHAT IT DOES:
+  * "scraping stats leaderboard one team at a time" and schedule scraping into
+    per-year schedule data frames (schedule{year}DF.csv, scheduleDf26.csv).
+  * "calculating SRS and SOS": constructs a team-by-team matrix M encoding each
+    team's opponents and solves the SRS linear system (rating = margin of victory +
+    average opponent rating). Two solution methods are implemented:
+      (1) a direct sparse linear solve (build M, sparse.csc_matrix, spsolve
+          against the negative margin-of-victory vector), and
+      (2) an ITERATIVE method (the "Iterative method" section) that repeatedly
+          updates ratings from opponents' current ratings until convergence.
+  * SOS derived as the average of opponents' ratings (via an M_opponents dot
+    product with the ratings vector), optionally added to MoV.
+  * A "from gemini" section contains an assistant-suggested implementation variant.
+
+TECHNIQUE:
+  * Linear-algebra rating estimation (SRS) by both exact sparse solve and fixed-
+    point iteration; no ML model training.
+
+PREDICTION ON UNKNOWN DATA: none (feature/rating generation only).
+
+OUTPUT FILES:
+  * SRS_SOS_fixed.csv, ncaa_srs_sos_1015.csv, scheduleDF.csv, scheduleDf26.csv,
+    schedule{year}DF.csv.
+
+
+================================================================================
+FILE 11: prediction_results.xlsx   (Excel workbook)   — stored predictions/results
+================================================================================
+Three sheets holding finished predictions (the visible deliverables):
+
+  * Sheet "prediction_results" (2026 submitted & SCORED bracket; 63 games):
+    columns Date, Round (Round of 64 ... Final), team seeds/names,
+    team1_win_pred (model probability), team1_win (actual), bce_loss, on_path,
+    Upset, Pick (the chosen winner), Correct, Points.
+      - Champion PICK: Michigan (over UConn in the Final).
+      - Final Four region picks include Michigan, Arizona, UConn/Houston lines.
+      - Round-of-64 UPSET picks (lower seed chosen): TCU over Ohio State (8/9),
+        South Florida over Louisville (6/11), VCU over UNC (6/11), Texas over BYU
+        (6/11), Texas A&M over Saint Mary's (7/10), Saint Louis over Georgia (8/9),
+        Utah State over Villanova (8/9), Iowa over Clemson (8/9), UCF over UCLA
+        (7/10).
+
+  * Sheet "2026 pca" (2026 simulated via the PCA ensemble; 63 games): columns
+    round, seed1/team1, seed2/team2, wins (actual), team1_win_pred, pred_winner.
+      - Champion: Houston (over Arkansas); Final Four Alabama, Arkansas, Houston,
+        UCLA.
+      - Notable R64 upset predictions: TCU>Ohio State, South Florida>Louisville,
+        Iowa>Clemson, VCU>UNC, Texas A&M>Saint Mary's, Utah State>Villanova,
+        Texas>BYU, Miami (OH)>Tennessee.
+
+  * Sheet "2025" (2025 simulated bracket; 63 games): columns round, seeds/teams,
+    wins1 (actual), pred1, pred_winner.
+      - Champion: Houston (over Florida); Final Four Florida, Michigan, Duke,
+        Houston.
+
+(These sheets correspond to the CSV bracket/sim outputs of the march2.x and
+predicting26 notebooks; the PCA sheet aligns with the PCA simulator, File 5.)
+
+
+################################################################################
+PART 2 — COMPARATIVE ANALYSIS (HOW THE FILES DIFFER)
+################################################################################
+
+PROJECT LINEAGE / WHICH FILE EXTENDS WHICH
+------------------------------------------------------------------------------
+  * march.Rmd (2024) is the earliest, standalone R exploration; it shares the
+    four-factors / Sports-Reference data ideas but none of the Python ML code.
+  * march.ipynb (2025) is the original Python workbench. march2.ipynb is a
+    cleaner REWRITE of it: march2 drops most of the brute-force model zoo and the
+    per-round separate models, standardizing on the diffs+mirrored feature design
+    and a PyTorch NN + small ensemble + Monte Carlo simulator.
+  * march2.1.ipynb EXTENDS march2.ipynb: same feature design, but upgrades manual
+    loops to cross-validated RandomizedSearchCV (incl. skorch for the NN), adds a
+    validation-set/leakage-aware protocol, principled ensemble-weight optimization,
+    and a PCA modeling track.
+  * march2.11.ipynb is a CONDENSED descendant of march2.1 that fixes PCA at
+    n_components=9 and runs the simulator on both 2025 and 2026.
+  * predicting26.ipynb is the INFERENCE counterpart: it consumes the models trained
+    in the march2 line (mod13v2.pth + rf/ada/xgb pickles) to predict 2026.
+  * march26_scrape.ipynb is the 2026 DATA + AUDIT companion (builds database26 /
+    teamstats26 / matchups26 that predicting26 and march2.1/2.11 read; later scores
+    results).
+  * The "epilogue" pair is a later BRANCH: march_epilogue.ipynb (File 8) builds a
+    leakage-controlled 2010-2026 dataset, SRS-and-SOS (File 10) supplies the
+    ratings for it, and "march epilogue training" (File 9) retrains on that larger
+    dataset while reusing the march2-line NN/Ada. It is an extension of the march2
+    modeling approach onto more data.
+
+1) ACQUIRING DATA
+------------------------------------------------------------------------------
+  * Source is consistently Sports-Reference (cbb) and, in march.Rmd, KenPom.
+  * Scraper technology differs:
+      - march.Rmd: no scraping; reads pre-downloaded CSVs.
+      - march.ipynb & march2.ipynb: a urllib3 soupify plus a heavyweight Playwright
+        "manual stealth" Chromium scraper (multiprocessing) to bypass bot checks.
+      - march26_scrape / march_epilogue / SRS: urllib3 + BeautifulSoup, with
+        cloudscraper available; march_epilogue specifically parses tables hidden in
+        HTML comments (a more robust technique for SR pages).
+  * Granularity/era differs by file: march.ipynb/march2 target a single recent
+    season pair (2024 train -> 2025); march26_scrape builds 2026 AND back-fills
+    2000-2009 from game logs; the epilogue branch assembles a continuous 2010-2026
+    panel (explicitly skipping 2020).
+  * Feature acquisition differs: march26_scrape engineers advanced metrics
+    (possessions, ORtg/DRtg, four factors, pace, Pythagorean wins) directly from
+    box-score totals; the epilogue branch instead recomputes SRS/SOS externally
+    (File 10) to avoid the tournament-game leakage baked into SR's published SRS/SOS.
+    This anti-leakage sourcing is the single biggest data-quality improvement in
+    the project.
+
+2) FEATURE ENGINEERING / PREPROCESSING
+------------------------------------------------------------------------------
+  * march.Rmd: team-level four-factor and rating features; binary round-achievement
+    targets; no train/valid split discipline.
+  * march.ipynb: begins with RAW team1/team2 columns, and only LATER introduces a
+    "diff dataset" (team1 - team2). Splits via a manual numpy index split.
+  * march2 / march2.1 / march2.11 / predicting26 / epilogue training: all converge
+    on the SAME curated DIFFERENCE features (seed_diff, SRS, SOS, off/def rtg, pace,
+    eFG, ORB%, TOV%, FT/FGA, 3PAr) plus net_eFG and net_TOV_pct, and all apply
+    MIRRORED augmentation (negate diffs, flip label) to remove team-ordering bias.
+    This is a clear methodological improvement over march.ipynb's raw columns.
+  * Small but important differences within the shared design:
+      - Column name casing drifts by data vintage: march2 uses eFG/ORB_pct/TOV_pct/
+        off_rtg; predicting26/scrape use lowercase efg/orb_pct/tov_pct/ORtg/DRtg;
+        epilogue uses efg_pct/ net_efg_pct. These reflect different scraped schemas
+        rather than different intent.
+      - Feature COUNT drifts across NN generations: predicting26 and epilogue load
+        a 13-input NN (mod13v2.pth); march2.1 trains NN variants with 23, 12, and
+        13 inputs (mod23.pth), and march2.ipynb also saved mod11.pth. The saved
+        model filename suffixes ("13", "23", "_9_pca") track these feature/rep
+        generations.
+  * Scaler handling: march2.ipynb explicitly FIXES an earlier scaling-leakage bug
+    by reusing one fitted StandardScaler across train/valid/test. march2.1 goes
+    further with a dedicated validation set for weight selection. By contrast,
+    predicting26 re-fits a fresh StandardScaler on the prediction data instead of
+    loading the training scaler — a regression in rigor relative to the training
+    notebooks (reported, not corrected).
+
+3) TRAINING MODELS
+------------------------------------------------------------------------------
+  * march.Rmd: Gaussian GLM (linear-probability) with forward/backward stepwise
+    selection; evaluated by AIC, VIF, Mallows' Cp. No resampling/CV.
+  * march.ipynb: widest but shallowest model zoo — trees, RF, Bagging, SVC
+    (poly/rbf), LinearSVC, SGD, Logistic, Voting — tuned by hand-written brute-force
+    loops and .score() on a single split; plus an ad-hoc ensemble of 465 random
+    depth-1 trees. Also trains SEPARATE models per tournament round.
+  * march2.ipynb: one PyTorch NN (BatchNorm + Dropout, BCE, Adam + weight decay,
+    manual early stopping, Youden-J threshold, calibration curve) + XGB/RF/Ada +
+    hand-weighted soft voting. Single model applied to ALL rounds (not per-round).
+  * march2.1.ipynb: the rigorous version — RandomizedSearchCV (CV=5) for every
+    family including skorch-wrapped NN (neg_log_loss), LogisticRegressionCV, and
+    numerically OPTIMIZED voting weights (random search + SLSQP with sum-to-1),
+    ROC-based threshold, plus a PCA track. Strongest training methodology.
+  * march2.11.ipynb: same toolkit, consolidated, with PCA fixed at 9 components.
+  * epilogue training: RandomForest via RandomizedSearchCV (neg_log_loss) on the
+    2010-2026 leakage-free panel, reusing the prior Ada + NN.
+  * Progression of rigor is clear: hand-tuned single-split (march / march2) ->
+    cross-validated search + validation-set weight tuning + PCA (march2.1 / 2.11)
+    -> larger leakage-controlled training data (epilogue). Resampling moves from
+    none/manual to k-fold CV and bootstrap.
+
+4) MAKING PREDICTIONS
+------------------------------------------------------------------------------
+  * march.Rmd: no out-of-sample predictions (model selection only).
+  * march.ipynb: round-by-round classification with the bracket advanced MANUALLY
+    (user hard-codes each round's matchups and re-predicts); First Four via the
+    random-tree ensemble. Deterministic predict() (winner = argmax), not
+    probabilistic simulation.
+  * march2 / march2.1 / march2.11 / predicting26: shift to a PROBABILISTIC Monte
+    Carlo bracket simulator (Bracket class + MC_MM) that samples each game by its
+    ensemble win probability and tallies how often each team reaches each round —
+    a substantially stronger way to express bracket uncertainty than single-path
+    advancement. Simulation counts differ: march2 ≈ 5,000 (50k variant);
+    predicting26 = 10,000; march2.1/2.11 loop in 1,000-bracket chunks written to
+    brackets{N}.csv.
+  * predicting26 adds a SYMMETRIC-averaging step (average of p and 1 - p_mirror)
+    for order invariance at inference — a refinement not present in march.ipynb.
+  * Ensemble weighting differs by file and even by round: march.ipynb uses
+    equal/implicit voting; march2 uses hand-picked weights; march2.1/2.11 optimize
+    weights; predicting26 switches weights between the First Four (all four models)
+    and later rounds (NN + Ada only) — an inconsistency worth flagging.
+  * TARGET YEARS: march.Rmd -> 2024 analysis; march.ipynb -> 2025; march2 -> 2025;
+    march2.1 -> 2026 sim (models are the 2023-holdout generation); march2.11 -> 2025
+    and 2026; predicting26 -> 2026.
+
+5) VISUALIZATION & ANALYSIS (designed figures, not raw output)
+------------------------------------------------------------------------------
+  * march.Rmd: the richest designed-figure set — faceted four-factor scatter/line
+    plots by region with seed/rating encodings, reused at each bracket round.
+  * march26_scrape: bootstrap upset-rate boxplots with significance lines, and
+    polished plotnine bar charts of tournament scoring (one matplotlib labeling
+    cell errors and is left as-is).
+  * march2 / march2.1 / march2.11: analytical plots (training/validation loss
+    curves, ROC curves, calibration/reliability curves) and plotnine end figures.
+  * predicting26: no designed figures, but rich tabular analysis (finish-probability
+    tables, recurring bracket-signature counts, head-to-head matchup investigators).
+
+6) NOTABLE WEAKNESSES AND IMPROVEMENTS ACROSS THE SET
+------------------------------------------------------------------------------
+  * Strongest-to-weakest training rigor: march2.1 ≈ march2.11 (CV search,
+    leakage-aware validation, optimized weights, PCA) > epilogue training
+    (CV'd RF on clean, larger data) > march2 (manual early-stopping, hand weights)
+    > march.ipynb (single-split brute-force loops, per-round tiny samples) and
+    march.Rmd (no resampling; Gaussian GLM used for a binary target).
+  * Weaknesses to flag:
+      - march.Rmd fits glm() without family=binomial, so a binary outcome is modeled
+        with ordinary least squares (linear probability), and stepwise selection is
+        run on ~70 predictors with very few championship-"final" positives — high
+        overfitting/selection risk.
+      - march.ipynb's per-round models are trained on extremely small per-round
+        samples and tuned by maximizing test-set .score() inside brute-force loops
+        (selection on the test set). Manual bracket advancement is error-prone.
+      - The 465 random depth-1 "trees" ensemble in march.ipynb is an ad-hoc
+        random-subspace scheme superseded by the later RandomForest/boosting work.
+      - predicting26 re-fits a new StandardScaler at inference rather than loading
+        the training scaler (standard_scaler-2.pkl is loaded but a fresh scaler is
+        fit in several cells) — a scaling mismatch risk versus how the models were
+        trained.
+      - Ensemble weights are not consistent across notebooks/rounds (e.g.,
+        predicting26 zeroes out RF and XGB after the First Four), so different
+        rounds effectively use different models.
+      - Several filenames are vintage-mismatched (e.g., march2.1 writes
+        brackets23.csv while simulating the 2026 field), which can cause confusion
+        but does not change the computation.
+  * Improvements over time (clear trajectory):
+      - Raw team1/team2 columns -> symmetric difference features + mirrored
+        augmentation (order invariance).
+      - Single train/test split & test-set tuning -> k-fold CV search + a separate
+        validation set for ensemble-weight selection (leakage control).
+      - Hand-picked ensemble weights -> log-loss-optimized weights (random search
+        and SLSQP) with ROC-based thresholding.
+      - Deterministic single-path bracket -> 5k/10k Monte Carlo simulations with
+        per-round finish probabilities and symmetric-averaged win probabilities.
+      - Site-published SRS/SOS (potential tournament leakage) -> externally
+        recomputed SRS/SOS and an explicit "no_leakage" join over a larger
+        2010-2026 training panel.
+
+7) REPEATED CODE BLOCKS (with the small differences that matter)
+------------------------------------------------------------------------------
+  * The diffs+mirrored feature block is duplicated across march2, march2.1,
+    march2.11, predicting26 and epilogue training. Differences are limited to
+    column-name casing (eFG vs efg vs efg_pct; off_rtg/def_rtg vs ORtg/DRtg) and
+    which net_* stats are appended — i.e., schema drift, not logic changes.
+  * The torch `Model` class (Linear(bias=False)+BatchNorm1d blocks, ReLU, Dropout,
+    Sigmoid) is copied verbatim into march2, march2.1, march2.11, predicting26 and
+    epilogue training; the only differences are constructor arguments (input_size
+    13 vs 23 vs 12; n_layers; hidden_dim; dropout) reflecting the NN generation.
+  * The Bracket class + MC_MM simulator recur in march2, march2.1, march2.11 and
+    predicting26; differences are the data vintage (25teamstats vs teamstats26),
+    the merge key (team vs school_name), the simulation count, and PCA vs non-PCA
+    feature transform.
+  * The bracket-scraping loop (parse region -> rounds -> seeds/teams/winners) recurs
+    in march.ipynb, march26_scrape and epilogue training with minor structural
+    tweaks (e.g., manual fixes for a known missing 2021 game / inserted "Oregon").
+  * The soft-vote weight block recurs in march2.1 and march2.11 (random sampling +
+    SLSQP); predicting26 reuses the resulting fixed coefficients rather than
+    re-optimizing.
+
+================================================================================
+END OF REPORT
+================================================================================

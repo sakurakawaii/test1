@@ -1,0 +1,830 @@
+---
+title: "march"
+author: "Josh LaFronz"
+date: "2024-03-17"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(scales)
+library(ggthemes)
+library(ggplot2)
+library(ggrepel)
+library(dplyr)
+library(lubridate)
+library(stringr)
+
+# model building
+library(MASS)
+library(leaps)
+library(car)
+library(olsrr)
+```
+
+## Tournament Field
+
+East:
+
+1 UCONN - 16 Stetson
+
+8 FAU - 9 Northwestern
+
+5 SDSU - 12 UAB
+
+4 Auburn - 13 Yale
+
+6 BYU - 11 Duquesne
+
+3 Illinois - 14 Morehead St
+
+7 Washington St - 10 Drake
+
+2 Iowa St - 15 South Dakota St
+
+South:
+
+1 Houston - 16 Longwood
+
+8 Nebraska - 9 Texas A&M
+
+5 Wisconsin - 12 James Madison
+
+4 Duke - 13 Vermont
+
+6 Texas Tech - 11 NC State
+
+3 Kentucky - 14 Oakland
+
+7 Florida - 10 Boise St/Colorado (FIRST FOUR)
+
+2 Marquette - 15 Western Kentucky
+
+Midwest:
+
+1 Purdue - 16 Montana St/Grambling (FIRST FOUR)
+
+8 Utah St - 9 TCU
+
+5 Gonzaga - 12 McNeese St
+
+4 Kansas - 13 Samford
+
+6 South Carolina - 11 Oregon
+
+3 Creighton - 14 Akron
+
+7 Texas - 10 Virginia/Colorado St (FIRST FOUR)
+
+2 Tennessee - 15 Saint Peter’s
+
+West:
+
+1 UNC - 16 Howard/Wagner (FIRST FOUR)
+
+8 Mississippi St - 9 Michigan St
+
+5 SMC - 12 GCU
+
+4 Alabama - 13 Charleston
+
+6 Clemson - 11 New Mexico
+
+3 Baylor - 14 Colgate
+
+7 Dayton - 10 Nevada
+
+2 Arizona - 15 Long Beach St
+
+
+## Notes gathered so far
+
+Virginia is an abysmal free throw shooting team (First Four against Colorado)
+
+Texas A&M is the worst three point shooting team (Against Nebraska)
+
+```{r}
+tourney_teams = c('Connecticut', 'Houston', 'Purdue',
+'North Carolina', 'Iowa State', 'Marquette',
+'Tennessee','Arizona','Illinois','Kentucky',
+'Creighton','Baylor','Auburn','Duke','Kansas',
+'Alabama','San Diego State','Wisconsin','Gonzaga',
+"Saint Mary's (CA)", 'Brigham Young', 'Texas Tech',
+'South Carolina','Clemson','Washington State', 'Florida','Texas','Dayton', 'Florida Atlantic',
+'Nebraska','Utah State','Mississippi State',
+'Northwestern','Texas A&M','TCU','Michigan State',
+'Drake','Nevada','Duquesne','NC State', 'Oregon',
+'New Mexico','UAB','James Madison','McNeese State',
+'Grand Canyon','Yale','Vermont','Samford','College of Charleston','Morehead State','Oakland','Akron',
+'Colgate','South Dakota State','Western Kentucky',
+"Saint Peter's","Long Beach State","Stetson",
+"Longwood")
+
+first_four = c("Boise State", "Colorado", "Montana State", "Grambling",
+               "Virginia","Colorado State",
+               "Howard","Wagner")
+
+conference = c("Big East", "Big 12", "Big Ten","ACC","Big 12","Big East","SEC",
+               "Pac-12","Big Ten", "SEC", "Big East", "Big 12","SEC", "ACC","Big 12",
+               "SEC","MWC","Big Ten","WCC","WCC","Big 12","Big 12","SEC",
+               "ACC","Pac-12","SEC","Big 12","A-10","AAC","Big Ten","MWC","SEC",
+               "Big Ten","SEC","Big 12","Big Ten","MVC","MWC","A-10","ACC","Pac-12",
+               "MWC","AAC","Sun Belt","Southland","WAC","Ivy","AEC","Southern","CAA",
+               "OVC","Horizon","MAC","Patriot","Summit","C-USA","MAAC","Big West","A-Sun",
+               "Big South")
+
+ff_conf = c("MWC","Pac-12","Big Sky","SWAC","ACC","MWC","MEAC","NEC")
+```
+
+```{r}
+tourney_teams |>
+  sort()
+```
+
+```{r}
+seeding = data.frame(
+  seed = c(sort(rep(seq(1,9),4)), 10,10, sort(rep(seq(11,15),4)), 16, 16),
+  region = c(rep(c("East","South","Midwest","West"),9), "East", "West", rep(c("East","South","Midwest","West"),5), "East", "South"),
+  team = tourney_teams,
+  conference = conference,
+  first_four = FALSE
+)
+seeding |> rbind(
+data.frame(
+  seed = c(10,10,16,16,10,10,16,16),
+  region = c("South", "South", rep("Midwest", 4), "West", "West"),
+  team = first_four,
+  conference = ff_conf,
+  first_four = TRUE
+)) -> field_of_68
+field_of_68
+rm(conference)
+rm(ff_conf)
+rm(first_four)
+rm(tourney_teams)
+rm(seeding)
+```
+```{r}
+# remove schools that lost in the first four
+field_of_68 |> filter(team %in% c("Boise State","Montana State","Virginia","Howard") == FALSE) -> field_of_68
+```
+
+```{r}
+# testing = read_csv("/Users/joshlafronz/Documents/my stuff/projects/datasets/march/spreftest.csv")
+# glimpse(testing)
+```
+
+
+```{r}
+# names(testing)
+# testing |>
+#   rename(tot_W = W...4, tot_L = L...5, conf_W = W...10, conf_L = L...11, home_W
+#          = W...13, home_L = L...14, away_W = W...16, away_L = L...17,
+#          PS = Tm., PA = Opp., team = School) |>
+#   subset(select = -c(Rk, ...9, ...12, ...15, ...18, ...21)) |>
+#   # filter(School %in% tourney_teams | School %in% tourney_teams)
+#   merge(field_of_68, by = "team")
+```
+
+```{r}
+field_of_68 |> group_by(conference) |> count()
+```
+
+```{r}
+basic_off = read_csv("/Users/joshlafronz/Documents/my stuff/projects/datasets/march/basic_off.csv")
+basic_def = read_csv("/Users/joshlafronz/Documents/my stuff/projects/datasets/march/basic_def.csv")
+
+basic_off |>
+  rename(tot_W = W...4, tot_L = L...5, conf_W = W...10, conf_L = L...11, home_W
+         = W...13, home_L = L...14, away_W = W...16, away_L = L...17,
+         PS = Tm., PA = Opp., team = School) |>
+  subset(select = -c(Rk, ...9, ...12, ...15, ...18, ...21)) |>
+  # filter(School %in% tourney_teams | School %in% tourney_teams)
+  merge(field_of_68, by = "team") |> relocate(seed, .before = team) |>
+  relocate(region, .before = team) |> relocate(conference, .before = G) -> basic_off
+
+basic_def |>
+  rename(tot_W = W...4, tot_L = L...5, conf_W = W...10, conf_L = L...11, home_W
+         = W...13, home_L = L...14, away_W = W...16, away_L = L...17,
+         PS = Tm., PA = Opp., team = School) |>
+  subset(select = -c(Rk, ...9, ...12, ...15, ...18, ...21)) |>
+  # filter(School %in% tourney_teams | School %in% tourney_teams)
+  merge(field_of_68, by = "team") |> relocate(seed, .before = team) |> 
+  relocate(seed, .before = team) |> relocate(conference, .before = G) -> basic_def
+```
+
+```{r}
+basic_off |> mutate(
+  X3pr = X3PA/FGA
+) |> ggplot(aes(x = X3pr, y = X3P_pct)) + geom_boxplot()
+
+basic_off |> mutate(
+  X3pr = X3PA/FGA
+) |> filter(X3P_pct > .4 | X3P_pct < .3)
+```
+
+```{r}
+basic_off |> mutate(
+  FTR = FTA/FGA
+) |> ggplot(aes(x = FTR, y = FT_pct)) + geom_point()
+
+basic_off |> mutate(
+  FTR = FTA/FGA
+) |> filter(FT_pct < .64)
+
+basic_off |> mutate(
+  FTR = FTA/FGA
+) |> filter(FTR > .4)
+
+basic_off |> mutate(
+  FTR = FTA/FGA
+) |> filter(FT_pct > .76)
+```
+```{r}
+basic_off |> filter(tot_W > 29)
+```
+
+
+
+```{r}
+advanced_off = read_csv("/Users/joshlafronz/Documents/my stuff/projects/datasets/march/advanced_off.csv")
+advanced_def = read_csv("/Users/joshlafronz/Documents/my stuff/projects/datasets/march/advanced_def.csv")
+
+advanced_off |>
+  rename(tot_W = W...4, tot_L = L...5, conf_W = W...10, conf_L = L...11, home_W
+         = W...13, home_L = L...14, away_W = W...16, away_L = L...17,
+         PS = Tm., PA = Opp., team = School) |>
+  subset(select = -c(Rk, ...9, ...12, ...15, ...18, ...21)) |>
+  # filter(School %in% tourney_teams | School %in% tourney_teams)
+  merge(field_of_68, by = "team") |> relocate(seed, .before = team) |>
+  relocate(seed, .before = team) |> relocate(conference, .before = G) -> advanced_off
+
+advanced_def |>
+  rename(tot_W = W...4, tot_L = L...5, conf_W = W...10, conf_L = L...11, home_W
+         = W...13, home_L = L...14, away_W = W...16, away_L = L...17,
+         PS = Tm., PA = Opp., team = School, DRtg = ORtg) |>
+  subset(select = -c(Rk, ...9, ...12, ...15, ...18, ...21)) |>
+  # filter(School %in% tourney_teams | School %in% tourney_teams)
+  merge(field_of_68, by = "team") |> relocate(seed, .before = team) |>
+  relocate(seed, .before = team) |> relocate(conference, .before = G) -> advanced_def
+```
+
+```{r}
+advanced_def |> filter(DRtg < 95)
+```
+
+```{r}
+advanced_off |> left_join(advanced_def, by = (c('seed', 'team', 'conference'))) |> subset(select=c(seed, team, ORtg, DRtg))  |> mutate(
+  net_rtg = ORtg - DRtg
+) |> arrange(desc(net_rtg))
+```
+
+```{r}
+advanced_off |> left_join(advanced_def, by = (c('seed', 'team', 'conference','region','first_four'))) |>
+  subset(select=c(seed, team, region, ORtg, eFG_pct.x, TOV_pct.x, ORB_pct.x, FT_FGA.x, DRtg, eFG_pct.y,
+                  TOV_pct.y, ORB_pct.y, FT_FGA.y)) |>
+  # mutate(
+  #   seed = fct_relevel(as.factor(seed), "1","16","8","9","5","12","4","13","6","11","3","14","7","10","2","15")
+  # )
+  mutate(
+    seed = factor(seed, levels = c("1","16","8","9","5","12","4","13","6","11","3","14","7","10","2","15")),
+    region = factor(region, levels = c("East", "South", "Midwest", "West"))
+  ) -> four_factors
+four_factors[order(four_factors$region, four_factors$seed),] -> four_factors
+four_factors
+```
+```{r}
+four_factors |> mutate(
+  matchup = case_when(
+    (seed == 1 | seed == 16) ~ "1-16",
+    (seed == 2 | seed == 15) ~ "2-15",
+    (seed == 3 | seed == 14) ~ "3-14",
+    (seed == 4 | seed == 13) ~ "4-13",
+    (seed == 5 | seed == 12) ~ "5-12",
+    (seed == 6 | seed == 11) ~ "6-11",
+    (seed == 7 | seed == 10) ~ "7-10",
+    (seed == 8 | seed == 9) ~ "8-9",
+  )
+) |> relocate(matchup, .before = ORtg) -> four_factors
+ggplot(four_factors, aes(x = ORtg, y = eFG_pct.x, color = matchup, group = matchup)) + geom_point(size = 4) +
+  facet_wrap(~region) + geom_line()
+```
+```{r}
+advanced_off |> left_join(advanced_def, by = (c('seed', 'team', 'conference','region','first_four'))) |>
+  subset(select=c(seed, team, region, Pace.x, ORtg, eFG_pct.x, TOV_pct.x, ORB_pct.x, FT_FGA.x, DRtg, eFG_pct.y,
+                  TOV_pct.y, ORB_pct.y, FT_FGA.y)) |> mutate(
+  higher_seed = case_when(
+    seed < 9 ~ TRUE,
+    TRUE ~ FALSE
+  ),
+  matchup = case_when(
+    (seed == 1 | seed == 16) ~ "1-16",
+    (seed == 2 | seed == 15) ~ "2-15",
+    (seed == 3 | seed == 14) ~ "3-14",
+    (seed == 4 | seed == 13) ~ "4-13",
+    (seed == 5 | seed == 12) ~ "5-12",
+    (seed == 6 | seed == 11) ~ "6-11",
+    (seed == 7 | seed == 10) ~ "7-10",
+    (seed == 8 | seed == 9) ~ "8-9",
+  )
+) |> relocate(matchup, .before = ORtg) -> four_factors
+
+four_factors
+
+ggplot(four_factors, aes(x = eFG_pct.x, y = FT_FGA.x, color = matchup, group = matchup)) + geom_point(aes(size = ORtg, shape = higher_seed)) + facet_wrap(~region) + geom_line()
+
+ggplot(four_factors, aes(x = TOV_pct.x, y = ORB_pct.x, color = matchup, group = matchup)) + geom_point(aes(size = ORtg, shape = higher_seed)) + facet_wrap(~region) + geom_line()
+
+ggplot(four_factors, aes(x = eFG_pct.y, y = FT_FGA.y, color = matchup, group = matchup)) + geom_point(aes(size = DRtg, shape = higher_seed)) + facet_wrap(~region) + geom_line()
+
+ggplot(four_factors, aes(x = TOV_pct.y, y = ORB_pct.y, color = matchup, group = matchup)) + geom_point(aes(size = DRtg, shape = higher_seed)) + facet_wrap(~region) + geom_line()
+```
+```{r}
+advanced_off |> mutate(
+  higher_seed = case_when(
+    seed < 9 ~ TRUE,
+    TRUE ~ FALSE
+  ),
+  matchup = case_when(
+    (seed == 1 | seed == 16) ~ "1-16",
+    (seed == 2 | seed == 15) ~ "2-15",
+    (seed == 3 | seed == 14) ~ "3-14",
+    (seed == 4 | seed == 13) ~ "4-13",
+    (seed == 5 | seed == 12) ~ "5-12",
+    (seed == 6 | seed == 11) ~ "6-11",
+    (seed == 7 | seed == 10) ~ "7-10",
+    (seed == 8 | seed == 9) ~ "8-9",
+  )
+) |> relocate(matchup, .before = ORtg) |> group_by(region, matchup, team) |> reframe(Pace = Pace)
+```
+
+```{r}
+four_factors |> ggplot(aes(x = ORtg, y = eFG_pct.x, color = seed)) + geom_point(size = 4) +
+  facet_wrap(~region)
+```
+
+```{r}
+r1_winners = c("Connecticut","Florida Atlantic", "San Diego State","Auburn","Houston",
+               "Texas A&M","James Madison","Duke","Brigham Young","Illinois","Drake",
+               "Iowa State","Texas Tech", "Kentucky", "Colorado", "Western Kentucky",
+               "North Carolina","Mississippi State","Saint Mary's (CA)","College of Charleston",
+               "Purdue","Utah State","Gonzaga","Samford","New Mexico","Baylor","Nevada",
+               "Arizona","Oregon","Creighton","Colorado State","Tennessee")
+
+four_factors |> filter(team %in% r1_winners) -> four_factors
+four_factors |>
+  mutate(
+    matchup = case_when(
+      seed %in% c(1,16,8,9) ~ "1/16 vs 8/9",
+      seed %in% c(5,12,4,13) ~ "5/12 vs 4/13",
+      seed %in% c(6,11,3,14) ~ "6/11 vs 3/14",
+      seed %in% c(7,10,2,15) ~ "7/10 vs 2/15"
+    )
+  ) -> four_factors
+
+four_factors
+
+ggplot(four_factors, aes(x = eFG_pct.x, y = FT_FGA.x, color = as.factor(seed), group = matchup)) + geom_point(aes(size = ORtg, shape = higher_seed)) + facet_wrap(~region) + geom_line()
+
+ggplot(four_factors, aes(x = TOV_pct.x, y = ORB_pct.x, color = as.factor(seed), group = matchup)) + geom_point(aes(size = ORtg, shape = higher_seed)) + facet_wrap(~region) + geom_line()
+
+ggplot(four_factors, aes(x = eFG_pct.y, y = FT_FGA.y, color = as.factor(seed), group = matchup)) + geom_point(aes(size = DRtg, shape = higher_seed)) + facet_wrap(~region) + geom_line()
+
+ggplot(four_factors, aes(x = TOV_pct.y, y = ORB_pct.y, color = as.factor(seed), group = matchup)) + geom_point(aes(size = DRtg, shape = higher_seed)) + facet_wrap(~region) + geom_line()
+```
+```{r}
+r2_winners = c("Connecticut","Auburn","Illinois","Iowa State","Houston","James Madison","Kentucky",
+               "Colorado","North Carolina","Saint Mary's (CA)","New Mexico","Arizona","Purdue",
+               "Samford","Creighton","Tennessee")
+
+four_factors |> filter(team %in% r2_winners) -> four_factors
+four_factors |>
+  mutate(
+    matchup = case_when(
+      seed %in% c(1,16,8,9,5,12,4,13) ~ "1/16/8/9 vs 5/12/4/13",
+      seed %in% c(6,11,3,14,7,10,2,15) ~ "6/11/3/14 vs 7/10/2/15",
+    )
+  ) -> four_factors
+
+four_factors
+
+ggplot(four_factors, aes(x = eFG_pct.x, y = FT_FGA.x, color = as.factor(seed), group = matchup)) + geom_point(aes(size = ORtg, shape = higher_seed)) + facet_wrap(~region) + geom_line()
+
+ggplot(four_factors, aes(x = TOV_pct.x, y = ORB_pct.x, color = as.factor(seed), group = matchup)) + geom_point(aes(size = ORtg, shape = higher_seed)) + facet_wrap(~region) + geom_line()
+
+ggplot(four_factors, aes(x = eFG_pct.y, y = FT_FGA.y, color = as.factor(seed), group = matchup)) + geom_point(aes(size = DRtg, shape = higher_seed)) + facet_wrap(~region) + geom_line()
+
+ggplot(four_factors, aes(x = TOV_pct.y, y = ORB_pct.y, color = as.factor(seed), group = matchup)) + geom_point(aes(size = DRtg, shape = higher_seed)) + facet_wrap(~region) + geom_line()
+```
+
+```{r}
+r3_winners = c("Connecticut","Illinois","James Madison","Kentucky",
+               "Saint Mary's (CA)","New Mexico","Purdue",
+               "Tennessee")
+
+four_factors |> filter(team %in% r3_winners) -> four_factors
+four_factors |>
+  mutate(
+    matchup = case_when(
+      seed %in% c(1,16,8,9,5,12,4,13) ~ "1/16/8/9 vs 5/12/4/13",
+      seed %in% c(6,11,3,14,7,10,2,15) ~ "6/11/3/14 vs 7/10/2/15",
+    )
+  ) -> four_factors
+
+four_factors
+
+ggplot(four_factors, aes(x = eFG_pct.x, y = FT_FGA.x, color = as.factor(team))) + geom_point(aes(size = ORtg, shape = higher_seed)) + facet_wrap(~region)
+
+ggplot(four_factors, aes(x = TOV_pct.x, y = ORB_pct.x, color = as.factor(team))) + geom_point(aes(size = ORtg, shape = higher_seed)) + facet_wrap(~region)
+
+ggplot(four_factors, aes(x = eFG_pct.y, y = FT_FGA.y, color = as.factor(team))) + geom_point(aes(size = DRtg, shape = higher_seed)) + facet_wrap(~region)
+
+ggplot(four_factors, aes(x = TOV_pct.y, y = ORB_pct.y, color = as.factor(team))) + geom_point(aes(size = DRtg, shape = higher_seed)) + facet_wrap(~region)
+```
+```{r}
+r4_winners = c("Connecticut","Kentucky",
+               "Saint Mary's (CA)",
+               "Tennessee")
+
+four_factors |> filter(team %in% r4_winners) -> four_factors
+four_factors |>
+  mutate(
+    matchup = case_when(
+      seed %in% c(1,16,8,9,5,12,4,13) ~ "1/16/8/9 vs 5/12/4/13",
+      seed %in% c(6,11,3,14,7,10,2,15) ~ "6/11/3/14 vs 7/10/2/15",
+    )
+  ) -> four_factors
+
+four_factors
+
+ggplot(four_factors, aes(x = eFG_pct.x, y = FT_FGA.x, color = as.factor(team))) + geom_point(aes(size = ORtg, shape = higher_seed))
+
+ggplot(four_factors, aes(x = TOV_pct.x, y = ORB_pct.x, color = as.factor(team))) + geom_point(aes(size = ORtg, shape = higher_seed))
+
+ggplot(four_factors, aes(x = eFG_pct.y, y = FT_FGA.y, color = as.factor(team))) + geom_point(aes(size = DRtg, shape = higher_seed))
+
+ggplot(four_factors, aes(x = TOV_pct.y, y = ORB_pct.y, color = as.factor(team))) + geom_point(aes(size = DRtg, shape = higher_seed))
+```
+
+```{r}
+kenpom <- read_csv("/Users/joshlafronz/Documents/my stuff/projects/march/kenpom.csv")
+unique(kenpom$Conf)
+```
+
+
+```{r}
+kenpom[grepl("[[:digit:]]", kenpom$Team),] |>
+  separate(Team, c("team", "seed"), sep = "[0-9]+")
+```
+
+
+```{r}
+str_trim(strsplit((kenpom[grepl("[[:digit:]]", kenpom$Team),])$Team, split = "[0-9]+"))
+```
+
+```{r}
+kenpom[grepl("[[:digit:]]", kenpom$Team),] |>
+  mutate(
+    Team = str_trim(strsplit(Team,split = "[0-9]+"))
+  ) -> kenpom
+```
+
+```{r}
+kenpom$Team[kenpom$Team == "Iowa St."] <- "Iowa State"
+kenpom$Team[kenpom$Team == "Michigan St."] <- "Michigan State"
+kenpom$Team[kenpom$Team == "BYU"] <- "Brigham Young"
+kenpom$Team[kenpom$Team == "Saint Mary's"] <- "Saint Mary's (CA)"
+kenpom$Team[kenpom$Team == "San Diego St."] <- "San Diego State"
+kenpom$Team[kenpom$Team == "Mississippi St."] <- "Mississippi State"
+kenpom$Team[kenpom$Team == "Colorado St."] <- "Colorado State"
+kenpom$Team[kenpom$Team == "Boise St."] <- "Boise State"
+kenpom$Team[kenpom$Team == "Washington St."] <- "Washington State"
+kenpom$Team[kenpom$Team == "Utah St."] <- "Utah State"
+kenpom$Team[kenpom$Team == "McNeese St."] <- "McNeese State"
+kenpom$Team[kenpom$Team == "Morehead St."] <- "Morehead State"
+kenpom$Team[kenpom$Team == "South Dakota St."] <- "South Dakota State"
+kenpom$Team[kenpom$Team == "Long Beach St."] <- "Long Beach State"
+kenpom$Team[kenpom$Team == "Montana St."] <- "Montana State"
+kenpom$Team[kenpom$Team == "Grambling St."] <- "Grambling"
+kenpom$Team[kenpom$Team == "Charleston"] <- "College of Charleston"
+kenpom$Team[kenpom$Team == "N.C. State"] <- "NC State"
+kenpom
+```
+
+```{r}
+kenpom |> filter(Team %in% field_of_68$team)
+```
+
+```{r}
+field_of_68 |> anti_join(kenpom, by = join_by("team" == "Team"))
+```
+
+```{r}
+kenpom |> relocate(Rk, .before = AdjO) -> kenpom
+```
+
+```{r}
+kenpom |> left_join(advanced_off |> left_join(advanced_def, by = (c('seed', 'team', 'conference'))) |> subset(select=c(seed, team, conference, ORtg, DRtg))  |> mutate(
+  net_rtg = ORtg - DRtg
+), by = join_by("Team" == "team")) |> subset(select = c(Team, conference, AdjEM, net_rtg)) |>
+  mutate(
+    power_5 = case_when(
+      conference %in% c("Big East", "Big 12", "Big Ten", "SEC", "ACC", "Pac-12") ~ TRUE,
+      TRUE ~ FALSE
+    )
+  ) |> ggplot(aes(x = net_rtg, y = AdjEM, color = power_5)) + geom_point()
+```
+
+```{r}
+true_shooting <- function(fga, fta, pts){
+  tsa = fga + 0.44*fta
+  ts_pct = pts/(2*tsa)
+  print(ts_pct)
+}
+
+true_shooting(54,6,69)
+```
+
+```{r}
+basic_off = read_csv("/Users/joshlafronz/Documents/my stuff/projects/datasets/march 23/basic_off.csv")
+basic_def = read_csv("/Users/joshlafronz/Documents/my stuff/projects/datasets/march 23/basic_def.csv")
+advanced_off = read_csv("/Users/joshlafronz/Documents/my stuff/projects/datasets/march 23/advanced_off.csv")
+advanced_def = read_csv("/Users/joshlafronz/Documents/my stuff/projects/datasets/march 23/advanced_def.csv")
+```
+
+# Working with data from last year
+
+```{r}
+basic_off |>
+  rename(tot_W = W...4, tot_L = L...5, conf_W = W...10, conf_L = L...11, home_W
+         = W...13, home_L = L...14, away_W = W...16, away_L = L...17,
+         PS = Tm., PA = Opp., team = School) |>
+  subset(select = -c(Rk, ...9, ...12, ...15, ...18, ...21)) |>
+  filter(grepl("NCAA", team) & 
+           !team %in% c("Nevada NCAA","Texas Southern NCAA",
+                        "Mississippi State NCAA", "Southeast Missouri State NCAA")) |>
+  mutate(
+    team = substr(team,1,nchar(team) - 5)
+  ) -> basic_off
+
+basic_def |>
+  rename(tot_W = W...4, tot_L = L...5, conf_W = W...10, conf_L = L...11, home_W
+         = W...13, home_L = L...14, away_W = W...16, away_L = L...17,
+         PS = Tm., PA = Opp., team = School) |>
+  subset(select = -c(Rk, ...9, ...12, ...15, ...18, ...21)) |>
+  filter(grepl("NCAA", team) & 
+           !team %in% c("Nevada NCAA","Texas Southern NCAA",
+                        "Mississippi State NCAA", "Southeast Missouri State NCAA")) |>
+  mutate(
+    team = substr(team,1,nchar(team) - 5)
+  ) |>
+  rename(opp_FG = FG, opp_FGA = FGA, opp_FG_pct = FG_pct, opp_X3P = X3P, 
+         opp_X3PA = X3PA, opp_X3P_pct = X3P_pct, opp_FT = FT, opp_FTA = FTA,
+         opp_FT_pct = FT_pct, opp_ORB = ORB, opp_TRB = TRB, opp_AST = AST, opp_STL = STL,
+         opp_BLK = BLK, opp_TOV = TOV, opp_PF = PF) -> basic_def
+
+advanced_off |>
+  rename(tot_W = W...4, tot_L = L...5, conf_W = W...10, conf_L = L...11, home_W
+         = W...13, home_L = L...14, away_W = W...16, away_L = L...17,
+         PS = Tm., PA = Opp., team = School) |>
+  subset(select = -c(Rk, ...9, ...12, ...15, ...18, ...21)) |>
+  filter(grepl("NCAA", team) & 
+           !team %in% c("Nevada NCAA","Texas Southern NCAA",
+                        "Mississippi State NCAA", "Southeast Missouri State NCAA")) |>
+  mutate(
+    team = substr(team,1,nchar(team) - 5)
+  ) -> advanced_off
+
+advanced_def |>
+  rename(tot_W = W...4, tot_L = L...5, conf_W = W...10, conf_L = L...11, home_W
+         = W...13, home_L = L...14, away_W = W...16, away_L = L...17,
+         PS = Tm., PA = Opp., team = School, DRtg = ORtg) |>
+  subset(select = -c(Rk, ...9, ...12, ...15, ...18, ...21)) |>
+  filter(grepl("NCAA", team) & 
+           !team %in% c("Nevada NCAA","Texas Southern NCAA",
+                        "Mississippi State NCAA", "Southeast Missouri State NCAA")) |>
+  mutate(
+    team = substr(team,1,nchar(team) - 5)
+  ) |>
+  rename(opp_FTr = FTr, opp_X3PAr = X3PAr, opp_TS_pct = TS_pct, opp_TRB_pct = TRB_pct,
+         opp_AST_pct = AST_pct, opp_STL_pct = STL_pct, opp_BLK_pct = BLK_pct,
+         opp_eFG_pct = eFG_pct, opp_TOV_pct = TOV_pct, opp_ORB_pct = ORB_pct, opp_FT_FGA =
+           FT_FGA) -> advanced_def
+```
+
+```{r}
+# basic_off
+# basic_def
+basic_off |> left_join(basic_def, 
+                       by = c("team","G","tot_W","tot_L","W_L_pct", "SRS","SOS","conf_W","conf_L","home_W", "home_L","away_W","away_L","PS","PA","MP")) -> basic_off_def
+basic_off_def
+```
+
+```{r}
+# advanced_off
+# advanced_def
+advanced_off |> left_join(advanced_def, by = c("team","G","tot_W","tot_L","W_L_pct", "SRS","SOS","conf_W","conf_L","home_W", "home_L","away_W","away_L","PS","PA","Pace")) -> advanced_off_def
+advanced_off_def
+```
+
+```{r}
+# basic_off_def
+# advanced_off_def
+basic_off_def |> left_join(advanced_off_def, by = c("team","G","tot_W","tot_L","W_L_pct", "SRS","SOS","conf_W","conf_L","home_W", "home_L","away_W","away_L","PS","PA")) -> final_table
+rm(basic_off, basic_def, advanced_off, advanced_def, basic_off_def, advanced_off_def)
+final_table
+```
+
+```{r}
+r_32 = c("FDU","Florida Atlantic","Duke","Tennessee","Kentucky","Kansas State",
+         "Michigan State","Marquette","Houston","Auburn","Miami (FL)","Indiana",
+         "Pittsburgh","Xavier","Penn State","Texas","Alabama","Maryland","San Diego State",
+         "Furman","Creighton","Baylor","Missouri","Princeton","Kansas","Arkansas",
+         "Saint Mary's (CA)","Connecticut","TCU","Gonzaga","Northwestern","UCLA")
+
+s_16 = c("Florida Atlantic","Tennessee","Kansas State","Michigan State", "Houston",
+         "Miami (FL)","Xavier","Texas","Alabama","San Diego State","Creighton",
+         "Princeton","Arkansas","Connecticut","Gonzaga","UCLA")
+
+e_8 = c("Florida Atlantic","Kansas State","Miami (FL)","Texas","San Diego State",
+        "Creighton","Connecticut","Gonzaga")
+
+final_4 = c("Florida Atlantic","Miami (FL)", "San Diego State", "Connecticut")
+
+final = c("San Diego State","Connecticut")
+
+# winner = "Connecticut"
+
+final_table |> filter(team %in% r_32) |> filter(team %in% s_16) |> 
+  filter(team %in% e_8) |> filter(team %in% final_4) |> filter(team %in% final) |>
+  filter(team == "Connecticut")
+```
+
+```{r}
+final_table |> mutate(
+  r_32 = ifelse(team %in% r_32, 1, 0),
+  s_16 = ifelse(team %in% s_16, 1, 0),
+  e_8 = ifelse(team %in% e_8, 1, 0),
+  final_4 = ifelse(team %in% final_4, 1, 0),
+  final = ifelse(team %in% final, 1, 0),
+  winner = ifelse(team == "Connecticut", 1, 0),
+) -> final_table
+rm(r_32, s_16, e_8, final_4, final)
+final_table
+```
+```{r}
+final_table
+```
+
+```{r}
+#specify the full model with all the potential predictors
+#and the null model with the intercept only
+
+## trying with every single variable
+
+# res.full=lm(ORtg ~ AGE + GP + MPG + USG. + TO. + FTA + FT. + X2PA + X2P. + 
+#                 X3PA + X3P. + eFG. + TS. + PPG + RPG + APG + SPG + BPG + TPG + 
+#                 P.R + P.A + P.R.A + VI + DRtg, data=nba.data)
+# 
+# res.null=lm(ORtg~1,data=nba.data)
+
+res.full=glm(final ~ G + tot_W + tot_L + W_L_pct + SRS + SOS + conf_W + conf_L +
+               home_W + home_L + away_W + away_L + PS + PA + MP + FG + FGA + FG_pct +
+               X3P + X3PA + X3P_pct + FT + FTA + FT_pct + ORB + TRB + AST + STL + 
+               BLK + TOV + PF + opp_FG + opp_FGA + opp_FG_pct + opp_X3P + opp_X3PA + 
+               opp_X3P_pct + opp_FT + opp_FTA + opp_FT_pct + opp_ORB + opp_TRB +
+               opp_AST + opp_STL + opp_BLK + opp_TOV + opp_PF + Pace + ORtg + FTr +
+               X3PAr + TS_pct + TRB_pct + AST_pct + STL_pct + BLK_pct + eFG_pct + 
+               TOV_pct + ORB_pct + FT_FGA + DRtg + opp_FTr + opp_X3PAr + opp_TS_pct + 
+               opp_TRB_pct + opp_AST_pct + opp_STL_pct + opp_BLK_pct + opp_eFG_pct + 
+               opp_TOV_pct + opp_ORB_pct + opp_FT_FGA, data = final_table)
+
+res.null = glm(final ~ 1, data = final_table)
+```
+
+```{r}
+res.full=glm(final ~ W_L_pct + SRS + SOS + conf_W + conf_L + home_W + home_L + away_W + away_L + FG_pct + X3P_pct + FT_pct + opp_FG_pct + opp_X3P_pct + opp_FT_pct + Pace + ORtg + FTr + X3PAr + TS_pct + TRB_pct + AST_pct + STL_pct + BLK_pct + eFG_pct + TOV_pct + ORB_pct + FT_FGA + DRtg + opp_FTr + opp_X3PAr + opp_TS_pct + opp_TRB_pct + opp_AST_pct + opp_STL_pct + opp_BLK_pct + opp_eFG_pct + opp_TOV_pct + opp_ORB_pct + opp_FT_FGA, data = final_table)
+
+res.null = glm(final ~ 1, data = final_table)
+```
+
+```{r}
+# forward=step(res.null,
+#              scope = list(upper=res.full),
+#              direction="forward",
+#              test="F",
+#              data=final_table)
+
+backward=step(res.full,
+              scope = list(lower=res.null),
+              direction="backward",
+              test="F",
+              data=final_table)
+```
+
+```{r}
+forward=step(res.null,
+             scope = list(upper=res.full),
+             direction="forward",
+             test="F",
+             data=final_table)
+```
+
+
+```{r}
+# forward=step(res.null,
+#              scope = list(upper=res.full),
+#              direction="forward",
+#              test="F",
+#              data=final_table)
+
+# res = glm(final ~ G + opp_X3P + opp_FT_pct + opp_STL_pct + opp_FGA + TOV_pct + 
+#     STL_pct + BLK + opp_STL + X3P + opp_FTr + opp_FT + opp_FTA + 
+#     opp_FT_FGA + DRtg, data=final_table)
+
+res = glm(final ~ W_L_pct + SRS + SOS + conf_W + conf_L + home_L + opp_X3P_pct + 
+    opp_FT_pct + ORtg + FTr + TS_pct + STL_pct + BLK_pct + eFG_pct + 
+    FT_FGA + DRtg + opp_TS_pct + opp_AST_pct + opp_STL_pct + 
+    opp_eFG_pct + opp_TOV_pct + opp_ORB_pct + opp_FT_FGA, data = final_table)
+
+summary(res)
+
+extractAIC(res)
+
+ols_mallows_cp(res,res.full)
+
+res = glm(final ~ opp_X3P_pct + opp_FT_pct, data = final_table)
+
+summary(res)
+
+extractAIC(res)
+
+ols_mallows_cp(res,res.full)
+```
+```{r}
+glm_eval <- function(model, full) {
+  print(summary(model))
+  print(extractAIC(model))
+  print(vif(model))
+  print(ols_mallows_cp(model, full))
+}
+
+res = glm(final ~ W_L_pct + SRS + SOS + conf_W + conf_L + home_L + opp_X3P_pct +
+    opp_FT_pct + ORtg + FTr + TS_pct + STL_pct + BLK_pct + eFG_pct +
+    FT_FGA + DRtg + opp_TS_pct + opp_AST_pct + opp_STL_pct +
+    opp_eFG_pct + opp_TOV_pct + opp_ORB_pct + opp_FT_FGA, data = final_table)
+
+glm_eval(res, res.full)
+
+res = glm(final ~ W_L_pct + SRS + SOS + conf_W + conf_L + home_L + opp_X3P_pct +
+    opp_FT_pct + ORtg + FTr + TS_pct + STL_pct + BLK_pct + eFG_pct +
+    FT_FGA + DRtg + opp_TS_pct + opp_STL_pct +
+    opp_eFG_pct + opp_TOV_pct + opp_ORB_pct + opp_FT_FGA, data = final_table)
+
+glm_eval(res, res.full)
+
+res = glm(final ~ W_L_pct + SRS + SOS + conf_W + conf_L + home_L + opp_X3P_pct +
+    opp_FT_pct + ORtg + TS_pct + STL_pct + BLK_pct + eFG_pct +
+    FT_FGA + DRtg + opp_TS_pct + opp_STL_pct +
+    opp_eFG_pct + opp_TOV_pct + opp_ORB_pct + opp_FT_FGA, data = final_table)
+
+glm_eval(res, res.full)
+
+res = glm(final ~ W_L_pct + SRS + SOS + conf_W + conf_L + home_L + opp_X3P_pct +
+    opp_FT_pct + ORtg + TS_pct + BLK_pct + eFG_pct +
+    FT_FGA + DRtg + opp_TS_pct + opp_STL_pct +
+    opp_eFG_pct + opp_TOV_pct + opp_ORB_pct + opp_FT_FGA, data = final_table)
+
+glm_eval(res, res.full)
+
+
+```
+
+```{r}
+#start with all potential predictors in the model
+
+# backward=step(res.full,
+#               scope = list(lower=res.null),
+#               direction="backward",
+#               test="F",
+#               data=final_table)
+
+# res1 = lm(ORtg ~ MPG + USG. + TO. + FTA + FT. + X3P. + eFG. + TS. + PPG + 
+#             RPG + APG + SPG + TPG + P.R, data=nba.data)
+# 
+# summary(res1)
+# 
+# extractAIC(res1)
+# 
+# ols_mallows_cp(res1,res.full)
+```
+
+
+
+
+
+
+
+
+
+
